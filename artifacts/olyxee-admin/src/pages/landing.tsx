@@ -208,23 +208,23 @@ const ShipmentCard: FC = () => {
 };
 
 const HeroSection: FC<{ goTo: GoTo }> = ({ goTo }) => (
-  <section className="relative isolate overflow-hidden bg-neutral-950 pt-28 pb-20 md:pt-36 md:pb-28">
-    <img src={oceanCargoImg} alt="" aria-hidden className="absolute inset-0 -z-10 h-full w-full object-cover object-[72%_50%]" />
-    <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-neutral-950 via-neutral-950/85 to-neutral-950/25" />
-    <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-neutral-950/70 to-transparent" />
+  <section className="relative isolate overflow-hidden bg-neutral-50 pt-28 pb-20 md:pt-36 md:pb-28">
+    <img src={airCargoImg} alt="" aria-hidden className="absolute inset-0 -z-10 h-full w-full object-cover object-[60%_45%]" />
+    <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-white via-white/90 to-white/10" />
+    <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-white to-transparent" />
 
     <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-[1.05fr_1fr]">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-        <h1 className="font-editorial text-[2.8rem] leading-[1.04] text-white text-balance md:text-6xl lg:text-[4.1rem]">
+        <h1 className="font-editorial text-[2.8rem] leading-[1.04] text-neutral-950 text-balance md:text-6xl lg:text-[4.1rem]">
           Run every cross-border freight job in one place.
         </h1>
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center font-ui">
-          <Link href="/login?mode=signup" className="group inline-flex items-center justify-center gap-2.5 rounded-md bg-red-600 px-6 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-red-500">
+          <Link href="/login?mode=signup" className="group inline-flex items-center justify-center gap-2.5 rounded-md bg-red-600 px-6 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-red-700">
             Create your workspace
             <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" />
           </Link>
-          <a href="#workflow" onClick={(e) => goTo(e, "workflow")} className="inline-flex items-center justify-center rounded-md border border-white/25 px-6 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-white/10">
+          <a href="#workflow" onClick={(e) => goTo(e, "workflow")} className="inline-flex items-center justify-center rounded-md border border-neutral-300 bg-white px-6 py-3.5 text-[15px] font-semibold text-neutral-900 transition-colors hover:border-neutral-400">
             See how a job moves
           </a>
         </div>
@@ -251,26 +251,20 @@ const BuiltForStrip: FC = () => (
 );
 
 const ProblemSection: FC = () => (
-  <section className="bg-neutral-950 py-20 text-white md:py-28">
+  <section className="bg-neutral-50 py-20 md:py-28">
     <div className="mx-auto max-w-7xl px-6">
-      <div className="relative overflow-hidden rounded-2xl">
-        <img src={oceanCargoImg} alt="Container ship at sea" className="absolute inset-0 h-full w-full object-cover object-right" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/85 to-neutral-950/10" />
-        <div className="relative max-w-2xl px-8 py-14 md:px-14 md:py-20">
-          <h2 className="font-editorial text-4xl leading-[1.05] text-balance md:text-5xl">
-            The cargo moves. The admin around it shouldn’t slow you down.
-          </h2>
-        </div>
-      </div>
+      <h2 className="max-w-3xl font-editorial text-4xl leading-[1.05] text-neutral-950 text-balance md:text-5xl">
+        The cargo moves. The admin around it shouldn’t slow you down.
+      </h2>
 
-      <div className="mt-6 grid gap-5 md:grid-cols-3">
+      <div className="mt-12 grid gap-5 md:grid-cols-3">
         {PAIN_POINTS.map((p, i) => (
-          <div key={p.pain} className="flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-7">
-            <span className="font-code text-xs text-neutral-500">{String(i + 1).padStart(2, "0")}</span>
-            <h3 className="mt-4 text-xl font-bold leading-snug font-ui">{p.pain}</h3>
-            <div className="mt-6 flex items-start gap-2.5 border-t border-white/10 pt-5">
-              <Check size={18} className="mt-0.5 shrink-0 text-red-400" strokeWidth={3} />
-              <p className="text-[15px] font-medium leading-snug text-neutral-100 font-ui">{p.fix}</p>
+          <div key={p.pain} className="flex flex-col rounded-xl border border-neutral-200 bg-white p-7">
+            <span className="font-code text-xs text-neutral-400">{String(i + 1).padStart(2, "0")}</span>
+            <h3 className="mt-4 text-xl font-bold leading-snug text-neutral-950 font-ui">{p.pain}</h3>
+            <div className="mt-6 flex items-start gap-2.5 border-t border-neutral-100 pt-5">
+              <Check size={18} className="mt-0.5 shrink-0 text-red-600" strokeWidth={3} />
+              <p className="text-[15px] font-medium leading-snug text-neutral-800 font-ui">{p.fix}</p>
             </div>
           </div>
         ))}
@@ -761,7 +755,7 @@ const PhoneTracking: FC = () => {
   const visible = flow.slice(start, current + 4);
 
   return (
-    <div className="overflow-hidden rounded-t-[2rem] border-[6px] border-b-0 border-neutral-700 bg-white text-neutral-950 shadow-2xl">
+    <div className="overflow-hidden rounded-t-[2rem] border-[6px] border-b-0 border-neutral-900 bg-white text-neutral-950 shadow-2xl">
       <div className="flex items-center gap-2.5 border-b border-neutral-100 px-5 py-4 font-ui">
         <span className="grid h-7 w-7 place-items-center rounded-md bg-neutral-900 text-[10px] font-bold text-white">TB</span>
         <span className="text-[13px] font-semibold">Table Bay Freight</span>
@@ -795,7 +789,7 @@ const PhoneTracking: FC = () => {
 };
 
 const CustomerExperienceSection: FC = () => (
-  <section className="bg-neutral-50 py-20 md:py-28">
+  <section className="bg-white py-20 md:py-28">
     <div className="mx-auto max-w-7xl px-6">
       <h2 className="max-w-3xl font-editorial text-4xl leading-[1.05] text-neutral-950 text-balance md:text-5xl">
         Your customers always know where their cargo is.
@@ -818,12 +812,12 @@ const CustomerExperienceSection: FC = () => (
           </div>
         </div>
 
-        <div className="flex min-h-[500px] flex-col overflow-hidden rounded-2xl bg-neutral-950 text-white font-ui">
+        <div className="flex min-h-[500px] flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-100 font-ui">
           <div className="p-8 pb-0 md:p-10 md:pb-0">
             <h3 className="text-2xl font-bold tracking-tight">Customers track it themselves.</h3>
             <ul className="mt-5 flex flex-wrap gap-2">
               {["Your logo and colours", "Any phone", "WordPress plugin"].map((c) => (
-                <li key={c} className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[13px] font-medium text-neutral-200">{c}</li>
+                <li key={c} className="rounded-full border border-neutral-200 bg-white px-3 py-1 text-[13px] font-medium text-neutral-700">{c}</li>
               ))}
             </ul>
           </div>
@@ -839,7 +833,7 @@ const CustomerExperienceSection: FC = () => (
 );
 
 const PricingSection: FC = () => (
-  <section id="pricing" className="scroll-mt-16 bg-white py-20 md:py-28">
+  <section id="pricing" className="scroll-mt-16 bg-neutral-50 py-20 md:py-28">
     <div className="mx-auto max-w-7xl px-6">
       <h2 className="mx-auto mb-14 max-w-2xl text-center font-editorial text-4xl leading-[1.05] text-neutral-950 text-balance md:text-5xl">
         Pricing built for forwarders.
@@ -865,7 +859,7 @@ const PricingSection: FC = () => (
           </Link>
         </div>
 
-        <div className="flex flex-col rounded-2xl border border-neutral-200 bg-neutral-50 p-8 font-ui">
+        <div className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-8 font-ui">
           <p className="text-sm font-bold text-neutral-900">{plans.business.name}</p>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="font-editorial text-5xl text-neutral-950">{SCALE_PRICE}</span>
@@ -898,24 +892,24 @@ const PricingSection: FC = () => (
 
 const CTASection: FC = () => (
   <section className="bg-white px-6 pb-20 pt-4 md:pb-28">
-    <div className="mx-auto grid max-w-7xl overflow-hidden rounded-2xl bg-neutral-950 lg:grid-cols-2">
+    <div className="mx-auto grid max-w-7xl overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-100 lg:grid-cols-2">
       <div className="flex flex-col justify-center px-8 py-14 md:px-14 md:py-20">
-        <h2 className="font-editorial text-4xl leading-[1.05] text-white text-balance md:text-5xl">
+        <h2 className="font-editorial text-4xl leading-[1.05] text-neutral-950 text-balance md:text-5xl">
           Ready to run your freight jobs from one place?
         </h2>
         <div className="mt-9 flex flex-col gap-3 sm:flex-row font-ui">
-          <Link href="/login?mode=signup" className="group inline-flex items-center justify-center gap-2.5 rounded-md bg-red-600 px-6 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-red-500">
+          <Link href="/login?mode=signup" className="group inline-flex items-center justify-center gap-2.5 rounded-md bg-red-600 px-6 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-red-700">
             Create your workspace
             <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" />
           </Link>
-          <Link href="/contact" className="inline-flex items-center justify-center rounded-md border border-white/20 px-6 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-white/10">
+          <Link href="/contact" className="inline-flex items-center justify-center rounded-md border border-neutral-300 bg-white px-6 py-3.5 text-[15px] font-semibold text-neutral-900 transition-colors hover:border-neutral-400">
             Talk to us
           </Link>
         </div>
       </div>
       <div className="relative min-h-[260px] lg:min-h-0">
         <img src={warehouseOperator} alt="Freight operator on the phone in a warehouse" className="absolute inset-0 h-full w-full object-cover object-[35%_50%]" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/20 to-transparent lg:via-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-neutral-100 via-neutral-100/20 to-transparent lg:via-transparent" />
       </div>
     </div>
   </section>
@@ -989,24 +983,24 @@ const FOOTER_COLUMNS: { title: string; links: { label: string; href: string; ext
 ];
 
 export const SiteFooter: FC = () => (
-  <footer className="bg-neutral-950 text-neutral-400">
+  <footer className="border-t border-neutral-200 bg-neutral-50 text-neutral-600">
     <div className="mx-auto max-w-7xl px-6 pb-8 pt-16">
       <div className="grid gap-12 md:grid-cols-[1.4fr_2fr] lg:gap-20">
         <div>
           <Link href="/" className="inline-flex items-center gap-2.5">
             <img src={freighticsLogo} alt="" className="h-9 w-9 object-contain" />
-            <span className="text-lg font-bold tracking-tight text-white">Freightics</span>
+            <span className="text-lg font-bold tracking-tight text-neutral-950">Freightics</span>
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed">Freight forwarding software for South African forwarders.</p>
           <ul className="mt-6 space-y-3 text-sm">
             <li>
-              <a href="mailto:scofield@olyxee.com" className="inline-flex items-center gap-2.5 transition-colors hover:text-white">
-                <Mail className="h-4 w-4 text-neutral-500" /> scofield@olyxee.com
+              <a href="mailto:scofield@olyxee.com" className="inline-flex items-center gap-2.5 transition-colors hover:text-neutral-950">
+                <Mail className="h-4 w-4 text-neutral-400" /> scofield@olyxee.com
               </a>
             </li>
             <li>
-              <a href="tel:+27712233272" className="inline-flex items-center gap-2.5 transition-colors hover:text-white">
-                <Phone className="h-4 w-4 text-neutral-500" /> +27 71 223 3272
+              <a href="tel:+27712233272" className="inline-flex items-center gap-2.5 transition-colors hover:text-neutral-950">
+                <Phone className="h-4 w-4 text-neutral-400" /> +27 71 223 3272
               </a>
             </li>
           </ul>
@@ -1015,16 +1009,16 @@ export const SiteFooter: FC = () => (
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
           {FOOTER_COLUMNS.map((col) => (
             <div key={col.title}>
-              <p className="text-sm font-semibold text-white">{col.title}</p>
+              <p className="text-sm font-semibold text-neutral-950">{col.title}</p>
               <ul className="mt-4 space-y-3 text-sm">
                 {col.links.map((l) => (
                   <li key={l.label}>
                     {l.external ? (
-                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition-colors hover:text-white">
+                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition-colors hover:text-neutral-950">
                         {l.label} <ArrowUpRight className="h-3.5 w-3.5 opacity-60" />
                       </a>
                     ) : (
-                      <Link href={l.href} className="transition-colors hover:text-white">{l.label}</Link>
+                      <Link href={l.href} className="transition-colors hover:text-neutral-950">{l.label}</Link>
                     )}
                   </li>
                 ))}
@@ -1034,10 +1028,10 @@ export const SiteFooter: FC = () => (
         </div>
       </div>
 
-      <div className="mt-14 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-14 flex flex-col gap-3 border-t border-neutral-200 pt-6 text-sm sm:flex-row sm:items-center sm:justify-between">
         <p>© {new Date().getFullYear()} Freightics. All rights reserved.</p>
         <p className="flex flex-wrap items-center gap-x-5 gap-y-1">
-          <a href="https://olyxee.com" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white">A product of Olyxee</a>
+          <a href="https://olyxee.com" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-neutral-950">A product of Olyxee</a>
           <span>Made in South Africa</span>
         </p>
       </div>
