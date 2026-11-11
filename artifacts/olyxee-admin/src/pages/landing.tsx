@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import notifyTracking from "@assets/image_1783706089743.png";
 import ctaWarehouse from "@assets/cta-warehouse.png";
-import olyxeeLogo from "@assets/Order-Loop-LOGO_1786979611771.png";
+
 import oldWayQuotes from "@assets/image_1786981204947.png";
 import oldWaySpreadsheets from "@assets/image_1786981215190.png";
 import oldWayInbox from "@assets/image_1786981225722.png";
@@ -31,6 +31,8 @@ import oceanCargoImg from "@assets/ocean-cargo.jpg";
 import heroCourier from "@assets/hero-courier.png";
 import customerDirectoryPreview from "@assets/customer-directory.png";
 import { plans } from "@/lib/launch";
+
+const freighticsLogo = `${import.meta.env.BASE_URL}freightics-primary.png`;
 
 // ─── Data ───────────────────────────────────────────────────────────────
 const OLD_WAY_SLIDES = [
@@ -77,8 +79,8 @@ const Nav: FC<NavProps> = ({ mobileMenuOpen, setMobileMenuOpen, onWorkflowClick 
   <header className="fixed top-0 inset-x-0 z-50 border-b border-neutral-200 bg-white/90 backdrop-blur-md">
     <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <Link href="/" className="flex items-center gap-3 group">
-        <img src={olyxeeLogo} alt="Olyxee Logistics" className="h-9 w-9 object-contain" />
-        <span className="text-sm font-semibold tracking-tight text-neutral-900 font-ui">Olyxee Logistics</span>
+        <img src={freighticsLogo} alt="Freightics" className="h-9 w-9 object-contain" />
+        <span className="text-sm font-semibold tracking-tight text-neutral-900 font-ui">Freightics</span>
       </Link>
 
       <div className="hidden md:flex items-center gap-4">
@@ -240,7 +242,7 @@ const WorkflowSection = () => (
           Built around the way <span className="text-neutral-500">freight forwarders</span> work.
         </h2>
         <p className="text-neutral-600 text-lg font-ui">
-          From quote to delivery, your team manages every step in Olyxee Logistics.
+          From quote to delivery, your team manages every step in Freightics.
         </p>
       </div>
 
@@ -556,7 +558,7 @@ const CustomerExperienceSection = () => (
         <div className="relative">
           <div className="absolute -inset-6 rounded-[2.5rem] bg-orange-200/30 blur-3xl" aria-hidden />
           <div className="relative overflow-hidden rounded-[1.5rem] border border-neutral-200 bg-white p-2 shadow-[0_30px_80px_-45px_rgba(24,24,27,0.34)] sm:p-3">
-            <img src={customerDirectoryPreview} alt="Olyxee customer directory showing contacts and companies ready for a new order" className="w-full rounded-[1rem] border border-neutral-100" loading="lazy" />
+            <img src={customerDirectoryPreview} alt="Freightics customer directory showing contacts and companies ready for a new order" className="w-full rounded-[1rem] border border-neutral-100" loading="lazy" />
           </div>
         </div>
       </div>
@@ -698,8 +700,8 @@ export const SiteFooter: FC = () => (
         {/* Brand */}
         <div className="col-span-2 md:col-span-5">
           <Link href="/" className="inline-flex items-center gap-2.5">
-            <img src={olyxeeLogo} alt="Olyxee Logistics logo" className="h-9 w-9 object-contain" />
-            <span className="text-xl font-bold tracking-tight">Olyxee Logistics</span>
+            <img src={freighticsLogo} alt="Freightics logo" className="h-9 w-9 object-contain" />
+            <span className="text-xl font-bold tracking-tight">Freightics</span>
           </Link>
           <p className="mt-5 text-sm text-neutral-600 leading-relaxed max-w-sm">
             One place for freight forwarders to run customers, orders, invoices,
@@ -802,7 +804,7 @@ export const SiteFooter: FC = () => (
       {/* Divider + bottom row */}
       <div className="mt-14 pt-6 border-t border-neutral-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <p style={footerMono} className="text-[11px] tracking-[0.2em] text-neutral-400">
-          © {new Date().getFullYear()} OLYXEE LOGISTICS · ALL RIGHTS RESERVED
+          © {new Date().getFullYear()} FREIGHTICS · ALL RIGHTS RESERVED
         </p>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-x-6 gap-y-2">
           <a
