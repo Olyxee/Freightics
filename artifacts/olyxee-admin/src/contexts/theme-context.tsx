@@ -90,7 +90,7 @@ function applyFavicon(dataUrl: string) {
     const match = /^data:([^;]+);/.exec(dataUrl);
     setFaviconLink(dataUrl, match?.[1]);
   } else {
-    setFaviconLink(`${import.meta.env.BASE_URL}favicon.png`, "image/png");
+    setFaviconLink(`${import.meta.env.BASE_URL}favicon.png?v=2`, "image/png");
   }
 }
 

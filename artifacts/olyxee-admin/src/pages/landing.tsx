@@ -31,7 +31,9 @@ import {
 } from "lucide-react";
 import warehouseOperator from "@assets/warehouse-operator-web.jpg";
 import airCargoImg from "@assets/air-cargo-web.jpg";
-import oceanCargoImg from "@assets/ocean-cargo-web.jpg";
+// Photos from Pexels (free licence, no attribution required): hero by Oleksiy (pexels.com/photo/38424255), sea banner by Martin Hungerbuehler (pexels.com/photo/20821680).
+import heroPortImg from "@assets/hero-port-web.jpg";
+import shipSeaImg from "@assets/ship-sea-web.jpg";
 import { plans } from "@/lib/launch";
 import { logisticsFlow, logisticsStatusLabel } from "@/lib/order-statuses";
 import { Button } from "@/components/ui/button";
@@ -209,9 +211,9 @@ const ShipmentCard: FC = () => {
 
 const HeroSection: FC<{ goTo: GoTo }> = ({ goTo }) => (
   <section className="relative isolate overflow-hidden bg-neutral-50 pt-28 pb-20 md:pt-36 md:pb-28">
-    <img src={airCargoImg} alt="" aria-hidden className="absolute inset-0 -z-10 h-full w-full object-cover object-[60%_45%]" />
-    <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-white via-white/90 to-white/10" />
-    <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-white to-transparent" />
+    <img src={heroPortImg} alt="" aria-hidden className="absolute inset-0 -z-10 h-full w-full object-cover object-[50%_42%]" />
+    <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-white/95 via-white/55 to-transparent" />
+    <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-white to-transparent" />
 
     <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-[1.05fr_1fr]">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
@@ -316,13 +318,13 @@ const WorkflowSection: FC = () => {
             <AnimatePresence mode="wait">
               <motion.img
                 key={mode}
-                src={mode === "SEA" ? oceanCargoImg : airCargoImg}
+                src={mode === "SEA" ? shipSeaImg : airCargoImg}
                 alt={mode === "SEA" ? "Container ship at sea" : "Air cargo being loaded onto an aircraft"}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className={`absolute inset-0 h-full w-full object-cover ${mode === "SEA" ? "object-right" : "object-[50%_45%]"}`}
+                className={`absolute inset-0 h-full w-full object-cover ${mode === "SEA" ? "object-[50%_62%]" : "object-[50%_45%]"}`}
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/80 via-neutral-950/40 to-transparent" />
@@ -983,24 +985,24 @@ const FOOTER_COLUMNS: { title: string; links: { label: string; href: string; ext
 ];
 
 export const SiteFooter: FC = () => (
-  <footer className="border-t border-neutral-200 bg-neutral-50 text-neutral-600">
+  <footer className="bg-neutral-950 text-neutral-400">
     <div className="mx-auto max-w-7xl px-6 pb-8 pt-16">
       <div className="grid gap-12 md:grid-cols-[1.4fr_2fr] lg:gap-20">
         <div>
           <Link href="/" className="inline-flex items-center gap-2.5">
             <img src={freighticsLogo} alt="" className="h-9 w-9 object-contain" />
-            <span className="text-lg font-bold tracking-tight text-neutral-950">Freightics</span>
+            <span className="text-lg font-bold tracking-tight text-white">Freightics</span>
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed">Freight forwarding software for South African forwarders.</p>
           <ul className="mt-6 space-y-3 text-sm">
             <li>
-              <a href="mailto:scofield@olyxee.com" className="inline-flex items-center gap-2.5 transition-colors hover:text-neutral-950">
-                <Mail className="h-4 w-4 text-neutral-400" /> scofield@olyxee.com
+              <a href="mailto:scofield@olyxee.com" className="inline-flex items-center gap-2.5 transition-colors hover:text-white">
+                <Mail className="h-4 w-4 text-neutral-500" /> scofield@olyxee.com
               </a>
             </li>
             <li>
-              <a href="tel:+27712233272" className="inline-flex items-center gap-2.5 transition-colors hover:text-neutral-950">
-                <Phone className="h-4 w-4 text-neutral-400" /> +27 71 223 3272
+              <a href="tel:+27712233272" className="inline-flex items-center gap-2.5 transition-colors hover:text-white">
+                <Phone className="h-4 w-4 text-neutral-500" /> +27 71 223 3272
               </a>
             </li>
           </ul>
@@ -1009,16 +1011,16 @@ export const SiteFooter: FC = () => (
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
           {FOOTER_COLUMNS.map((col) => (
             <div key={col.title}>
-              <p className="text-sm font-semibold text-neutral-950">{col.title}</p>
+              <p className="text-sm font-semibold text-white">{col.title}</p>
               <ul className="mt-4 space-y-3 text-sm">
                 {col.links.map((l) => (
                   <li key={l.label}>
                     {l.external ? (
-                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition-colors hover:text-neutral-950">
+                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition-colors hover:text-white">
                         {l.label} <ArrowUpRight className="h-3.5 w-3.5 opacity-60" />
                       </a>
                     ) : (
-                      <Link href={l.href} className="transition-colors hover:text-neutral-950">{l.label}</Link>
+                      <Link href={l.href} className="transition-colors hover:text-white">{l.label}</Link>
                     )}
                   </li>
                 ))}
@@ -1028,10 +1030,10 @@ export const SiteFooter: FC = () => (
         </div>
       </div>
 
-      <div className="mt-14 flex flex-col gap-3 border-t border-neutral-200 pt-6 text-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-14 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm sm:flex-row sm:items-center sm:justify-between">
         <p>© {new Date().getFullYear()} Freightics. All rights reserved.</p>
         <p className="flex flex-wrap items-center gap-x-5 gap-y-1">
-          <a href="https://olyxee.com" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-neutral-950">A product of Olyxee</a>
+          <a href="https://olyxee.com" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white">A product of Olyxee</a>
           <span>Made in South Africa</span>
         </p>
       </div>
