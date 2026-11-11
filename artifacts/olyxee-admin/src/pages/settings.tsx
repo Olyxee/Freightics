@@ -28,7 +28,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { compressLogo, compressFavicon } from "@/lib/image-processing";
 import { safeTimeAgo } from "@/lib/date-utils";
 
-const DEFAULT_PRIMARY = "#2b2b2b";
+const DEFAULT_PRIMARY = "#DC2626";
 
 // ─── Section accent tints ─────────────────────────────────────────────────────
 // Apple system colors. Each settings area gets its own tint so the page is
@@ -1485,7 +1485,7 @@ function TrackingCustomizationSection() {
   const cleanBase = base.trim().replace(/\/+$/, "") || "https://logistics.olyxee.com";
   const cleanId = exampleId.trim() || `${effectivePrefix}-K7M-9X2A`;
   const snippets = useMemo(
-    () => buildSnippets(cleanBase, cleanId, businessName || "Your Store", primaryColor || "#2b2b2b"),
+    () => buildSnippets(cleanBase, cleanId, businessName || "Your Store", primaryColor || "#DC2626"),
     [cleanBase, cleanId, businessName, primaryColor],
   );
 

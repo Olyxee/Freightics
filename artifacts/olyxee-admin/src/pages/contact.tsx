@@ -33,7 +33,7 @@ const ContactPage: FC = () => {
           <div className="col-span-12 lg:col-span-5">
             <p style={mono} className="text-[11px] tracking-[0.3em] text-neutral-400 mb-4">GET IN TOUCH</p>
             <h1 style={serif} className="text-5xl sm:text-7xl tracking-tight leading-[0.95] mb-6">
-              Let's talk <em className="text-orange-500 italic">logistics.</em>
+              Let's talk <em className="text-red-600 italic">logistics.</em>
             </h1>
             <p className="text-lg text-neutral-600 leading-relaxed max-w-md mb-10">
               Whether you're shipping ten orders a day or ten thousand, we'd love to hear how your team works and where Freightics can help.
@@ -41,21 +41,21 @@ const ContactPage: FC = () => {
 
             <div className="space-y-5">
               <a href="mailto:scofield@olyxee.com" className="flex items-start gap-4 group">
-                <span className="w-10 h-10 rounded-full bg-neutral-100 group-hover:bg-orange-100 flex items-center justify-center transition-colors">
+                <span className="w-10 h-10 rounded-full bg-neutral-100 group-hover:bg-red-100 flex items-center justify-center transition-colors">
                   <Mail className="w-4 h-4 text-neutral-700" />
                 </span>
                 <div>
                   <p style={mono} className="text-[10px] tracking-[0.25em] text-neutral-400">EMAIL</p>
-                  <p className="text-base text-neutral-900 group-hover:text-orange-600 transition-colors">scofield@olyxee.com</p>
+                  <p className="text-base text-neutral-900 group-hover:text-red-700 transition-colors">scofield@olyxee.com</p>
                 </div>
               </a>
               <a href="tel:+27712233272" className="flex items-start gap-4 group">
-                <span className="w-10 h-10 rounded-full bg-neutral-100 group-hover:bg-orange-100 flex items-center justify-center transition-colors">
+                <span className="w-10 h-10 rounded-full bg-neutral-100 group-hover:bg-red-100 flex items-center justify-center transition-colors">
                   <Phone className="w-4 h-4 text-neutral-700" />
                 </span>
                 <div>
                   <p style={mono} className="text-[10px] tracking-[0.25em] text-neutral-400">PHONE</p>
-                  <p className="text-base text-neutral-900 group-hover:text-orange-600 transition-colors">+27 71 223 3272</p>
+                  <p className="text-base text-neutral-900 group-hover:text-red-700 transition-colors">+27 71 223 3272</p>
                 </div>
               </a>
               <div className="flex items-start gap-4">
@@ -74,7 +74,7 @@ const ContactPage: FC = () => {
             <div className="rounded-[2rem] bg-neutral-50 ring-1 ring-neutral-200 p-8 sm:p-10">
               {submitted ? (
                 <div className="py-16 text-center">
-                  <p style={mono} className="text-[10px] tracking-[0.3em] text-orange-500 mb-3">MESSAGE SENT</p>
+                  <p style={mono} className="text-[10px] tracking-[0.3em] text-red-600 mb-3">MESSAGE SENT</p>
                   <h3 style={serif} className="text-3xl mb-3">Thanks - we'll be in touch.</h3>
                   <p className="text-neutral-600">We typically reply within one business day.</p>
                 </div>
@@ -100,7 +100,7 @@ const ContactPage: FC = () => {
                   </div>
                   <button type="submit" className="group inline-flex items-center justify-between gap-6 w-full sm:w-auto px-7 py-4 bg-neutral-900 text-white rounded-full hover:bg-black transition-colors">
                     <span className="text-sm font-medium tracking-wide">Send message</span>
-                    <span className="w-8 h-8 rounded-full bg-orange-400 text-neutral-900 flex items-center justify-center group-hover:rotate-45 transition-transform duration-500">
+                    <span className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center group-hover:rotate-45 transition-transform duration-500">
                       <ArrowUpRight className="w-4 h-4" />
                     </span>
                   </button>

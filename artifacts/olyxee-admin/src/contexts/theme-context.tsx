@@ -29,7 +29,7 @@ const STORAGE_KEY = "olyxee_theme";
 
 const DEFAULTS: ThemeSettings = {
   isDark: false,
-  primaryColor: "#2b2b2b",
+  primaryColor: "#DC2626",
   logoUrl: "",
   faviconUrl: "",
   businessName: "",

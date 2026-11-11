@@ -99,10 +99,11 @@
 }
 
 :root {
-  /* Brand color - updated dynamically via JS */
+  /* Brand color - updated dynamically via JS. Default is the Freightics logo
+     red (#DC2626), so the first paint matches before the theme loads. */
   --brand-h: 0;
-  --brand-s: 0%;
-  --brand-l: 17%;
+  --brand-s: 72%;
+  --brand-l: 51%;
 
   /* Olyxee neutral palette: restrained, cool-neutral (hue 210) greys. A quiet
      neutral-50 page (#F8F9FA) sits behind floating white surfaces. */
