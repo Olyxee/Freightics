@@ -69,7 +69,7 @@ function isPlanActivatable(planId: string): boolean {
 // never send a paying customer to an untrusted domain.
 function trustedCallbackBase(req: Request): string {
   const fallback = (
-    process.env.PUBLIC_APP_URL || "https://logistics.olyxee.com"
+    process.env.PUBLIC_APP_URL || "https://freightics.olyxee.com"
   ).replace(/\/$/, "");
   const origin = req.get("origin");
   if (!origin) return fallback;
