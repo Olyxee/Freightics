@@ -543,7 +543,12 @@ router.post("/orders", requireAuth, async (req, res) => {
       await db.update(ordersTable).set({billingStatus:"AWAITING_PAYMENT",updatedAt:new Date()}).where(and(eq(ordersTable.id,o.id),eq(ordersTable.businessId,businessId)));
       await db.insert(auditLogsTable).values({id:generateId(),businessId,userId,action:"AUTO_SEND_INVOICE",entityType:"invoice",entityId:invoiceId,metadata:{messageId:delivery.messageId,customerEmail:customer.email,smsStatus:invoiceSmsStatus}});
     } else {
-      req.log?.error({invoiceId,error:delivery.error,smsStatus:invoiceSmsStatus},"Automatic invoice email failed");
+      req.log?.error({invoiceId,error:delivery.error,smsStatus:invoiceSmsStatus},"Automatic invoice email failed (non-fatal, invoice still issued)");
+      // Payment must not depend on email delivery: issue the invoice anyway so it
+      // can be paid and confirmed. sentAt stays empty so a later send is the first send.
+      await db.update(invoicesTable).set({status:"sent",updatedAt:new Date()}).where(and(eq(invoicesTable.id,invoiceId),eq(invoicesTable.businessId,businessId)));
+      await db.update(ordersTable).set({billingStatus:"AWAITING_PAYMENT",updatedAt:new Date()}).where(and(eq(ordersTable.id,o.id),eq(ordersTable.businessId,businessId)));
+      await db.insert(auditLogsTable).values({id:generateId(),businessId,userId,action:"AUTO_SEND_INVOICE",entityType:"invoice",entityId:invoiceId,metadata:{emailStatus:"failed",emailError:delivery.error||"unknown",smsStatus:invoiceSmsStatus}});
     }
     res.status(201).json({...serializeOrder({...o,invoiceId}),invoiceId,invoiceEmailStatus:delivery.success?"sent":"failed",orderSmsStatus,invoiceSmsStatus});
   } catch (err) {
