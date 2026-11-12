@@ -1,115 +1,145 @@
 import { FC, FormEvent, useState } from "react";
-import { Link } from "wouter";
-import { ArrowUpRight, Mail, MessageCircle, Phone } from "lucide-react";
-import { SiteFooter } from "@/pages/landing";
+import { ArrowRight, Clock, Mail, Phone } from "lucide-react";
+import { Nav, SiteFooter } from "@/pages/landing";
+import teamImg from "@assets/contact-team.webp";
 
-const serif = { fontFamily: '"Lora", ui-serif, Georgia, serif', fontWeight: 500 };
-const mono = { fontFamily: '"JetBrains Mono", ui-monospace, SFMono-Regular, monospace' };
-const sans = '"Inter", system-ui, -apple-system, sans-serif';
+const EMAIL = "info@olyxee.com";
+const PHONE_LABEL = "+27 71 223 3272";
+const PHONE_HREF = "tel:+27712233272";
+
+const field =
+  "w-full rounded-lg border border-neutral-200 bg-white px-4 text-[15px] text-neutral-900 placeholder:text-neutral-400 outline-none transition-shadow focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/10";
+
+const CONTACT_ROWS = [
+  { icon: Mail, label: "Email", value: EMAIL, href: `mailto:${EMAIL}` },
+  { icon: Phone, label: "Phone", value: PHONE_LABEL, href: PHONE_HREF },
+  { icon: Clock, label: "Hours", value: "Mon–Fri, 9am–6pm", href: undefined },
+];
 
 const ContactPage: FC = () => {
-  const [submitted, setSubmitted] = useState(false);
+  const [name, setName] = useState("");
+  const [business, setBusiness] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [opened, setOpened] = useState(false);
 
+  // There is no contact endpoint, so the form hands the message to the visitor's
+  // own email app, addressed to our inbox. Nothing is claimed as "sent" here.
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    const subject = `Freightics enquiry from ${name}${business ? ` (${business})` : ""}`;
+    const body = `${message}\n\n${name}${business ? `\n${business}` : ""}\n${email}`;
+    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setOpened(true);
   }
 
   return (
-    <div className="min-h-screen bg-white text-neutral-900" style={{ fontFamily: sans }}>
-      <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-white/80 border-b border-neutral-200/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <img src="/freightics-primary.png" alt="Freightics" className="h-7 sm:h-9 w-auto object-contain" />
-          </Link>
-          <Link href="/login" className="text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 rounded-full bg-neutral-900 text-white hover:bg-black transition-colors">
-            Sign in
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen w-full overflow-x-hidden bg-white text-neutral-900 font-ui">
+      <style>{`
+        .font-editorial { font-family: 'Manrope', 'Inter', system-ui, sans-serif; font-weight: 800; letter-spacing: -0.04em; }
+        .font-ui { font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif; }
+      `}</style>
 
-      <section className="pt-32 sm:pt-40 pb-20 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-12 gap-10">
-          <div className="col-span-12 lg:col-span-5">
-            <p style={mono} className="text-[11px] tracking-[0.3em] text-neutral-400 mb-4">GET IN TOUCH</p>
-            <h1 style={serif} className="text-5xl sm:text-7xl tracking-tight leading-[0.95] mb-6">
-              Let's talk <em className="text-red-600 italic">logistics.</em>
-            </h1>
-            <p className="text-lg text-neutral-600 leading-relaxed max-w-md mb-10">
-              Whether you're shipping ten orders a day or ten thousand, we'd love to hear how your team works and where Freightics can help.
-            </p>
+      <Nav />
 
-            <div className="space-y-5">
-              <a href="mailto:scofield@olyxee.com" className="flex items-start gap-4 group">
-                <span className="w-10 h-10 rounded-full bg-neutral-100 group-hover:bg-red-100 flex items-center justify-center transition-colors">
-                  <Mail className="w-4 h-4 text-neutral-700" />
-                </span>
-                <div>
-                  <p style={mono} className="text-[10px] tracking-[0.25em] text-neutral-400">EMAIL</p>
-                  <p className="text-base text-neutral-900 group-hover:text-red-700 transition-colors">scofield@olyxee.com</p>
-                </div>
-              </a>
-              <a href="tel:+27712233272" className="flex items-start gap-4 group">
-                <span className="w-10 h-10 rounded-full bg-neutral-100 group-hover:bg-red-100 flex items-center justify-center transition-colors">
-                  <Phone className="w-4 h-4 text-neutral-700" />
-                </span>
-                <div>
-                  <p style={mono} className="text-[10px] tracking-[0.25em] text-neutral-400">PHONE</p>
-                  <p className="text-base text-neutral-900 group-hover:text-red-700 transition-colors">+27 71 223 3272</p>
-                </div>
-              </a>
-              <div className="flex items-start gap-4">
-                <span className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center">
-                  <MessageCircle className="w-4 h-4 text-neutral-700" />
-                </span>
-                <div>
-                  <p style={mono} className="text-[10px] tracking-[0.25em] text-neutral-400">SUPPORT</p>
-                  <p className="text-base text-neutral-900">Mon–Fri, 9am–6pm</p>
-                </div>
-              </div>
+      <main>
+        <section className="px-6 pb-16 pt-28 md:pb-24 md:pt-36">
+          <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
+            <div>
+              <h1 className="font-editorial text-[2.6rem] leading-[1.04] text-neutral-950 text-balance md:text-6xl">
+                Talk to the team behind Freightics.
+              </h1>
+
+              <ul className="mt-10 space-y-3">
+                {CONTACT_ROWS.map(({ icon: Icon, label, value, href }) => {
+                  const inner = (
+                    <>
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-red-50 text-red-600">
+                        <Icon className="h-[18px] w-[18px]" />
+                      </span>
+                      <span>
+                        <span className="block text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400">{label}</span>
+                        <span className="block text-lg font-semibold text-neutral-950">{value}</span>
+                      </span>
+                    </>
+                  );
+                  return (
+                    <li key={label}>
+                      {href ? (
+                        <a href={href} className="flex items-center gap-4 rounded-xl p-2 -m-2 transition-colors hover:bg-neutral-50">
+                          {inner}
+                        </a>
+                      ) : (
+                        <div className="flex items-center gap-4 p-2 -m-2">{inner}</div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            <div className="relative">
+              <img
+                src={teamImg}
+                alt="The Freightics support team at their desks"
+                className="aspect-[16/9] w-full rounded-2xl object-cover shadow-[0_30px_70px_-35px_rgba(0,0,0,0.45)]"
+              />
             </div>
           </div>
+        </section>
 
-          <div className="col-span-12 lg:col-span-7 lg:pl-10">
-            <div className="rounded-[2rem] bg-neutral-50 ring-1 ring-neutral-200 p-8 sm:p-10">
-              {submitted ? (
-                <div className="py-16 text-center">
-                  <p style={mono} className="text-[10px] tracking-[0.3em] text-red-600 mb-3">MESSAGE SENT</p>
-                  <h3 style={serif} className="text-3xl mb-3">Thanks - we'll be in touch.</h3>
-                  <p className="text-neutral-600">We typically reply within one business day.</p>
+        <section className="bg-neutral-50 px-6 py-16 md:py-24">
+          <div className="mx-auto max-w-3xl">
+            <h2 className="font-editorial text-3xl leading-[1.05] text-neutral-950 md:text-4xl">Send us a message.</h2>
+
+            <div className="mt-8 rounded-2xl bg-white p-6 shadow-sm md:p-10">
+              {opened ? (
+                <div className="py-6 text-center">
+                  <h3 className="text-2xl font-bold text-neutral-950">Your email app should be open.</h3>
+                  <p className="mx-auto mt-3 max-w-md text-neutral-600">
+                    Your message is ready to send to <a className="font-semibold text-neutral-950 underline underline-offset-4" href={`mailto:${EMAIL}`}>{EMAIL}</a>. If nothing opened, copy that address and email us directly.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setOpened(false)}
+                    className="mt-6 text-sm font-semibold text-red-600 hover:text-red-700"
+                  >
+                    Back to the form
+                  </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid sm:grid-cols-2 gap-5">
-                    <div>
-                      <label style={mono} className="block text-[10px] tracking-[0.25em] text-neutral-500 mb-2">NAME</label>
-                      <input required type="text" className="w-full h-11 px-4 rounded-lg bg-white ring-1 ring-neutral-200 focus:ring-2 focus:ring-neutral-900 outline-none transition-all" placeholder="Jane Doe" />
-                    </div>
-                    <div>
-                      <label style={mono} className="block text-[10px] tracking-[0.25em] text-neutral-500 mb-2">BUSINESS</label>
-                      <input type="text" className="w-full h-11 px-4 rounded-lg bg-white ring-1 ring-neutral-200 focus:ring-2 focus:ring-neutral-900 outline-none transition-all" placeholder="Your company" />
-                    </div>
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="mb-2 block text-sm font-semibold text-neutral-800">Name</span>
+                      <input required value={name} onChange={(e) => setName(e.target.value)} type="text" autoComplete="name" className={`${field} h-12`} placeholder="Your name" />
+                    </label>
+                    <label className="block">
+                      <span className="mb-2 block text-sm font-semibold text-neutral-800">Business</span>
+                      <input value={business} onChange={(e) => setBusiness(e.target.value)} type="text" autoComplete="organization" className={`${field} h-12`} placeholder="Your company" />
+                    </label>
                   </div>
-                  <div>
-                    <label style={mono} className="block text-[10px] tracking-[0.25em] text-neutral-500 mb-2">EMAIL</label>
-                    <input required type="email" className="w-full h-11 px-4 rounded-lg bg-white ring-1 ring-neutral-200 focus:ring-2 focus:ring-neutral-900 outline-none transition-all" placeholder="you@company.com" />
-                  </div>
-                  <div>
-                    <label style={mono} className="block text-[10px] tracking-[0.25em] text-neutral-500 mb-2">MESSAGE</label>
-                    <textarea required rows={5} className="w-full px-4 py-3 rounded-lg bg-white ring-1 ring-neutral-200 focus:ring-2 focus:ring-neutral-900 outline-none transition-all resize-none" placeholder="Tell us a bit about your operation…" />
-                  </div>
-                  <button type="submit" className="group inline-flex items-center justify-between gap-6 w-full sm:w-auto px-7 py-4 bg-neutral-900 text-white rounded-full hover:bg-black transition-colors">
-                    <span className="text-sm font-medium tracking-wide">Send message</span>
-                    <span className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center group-hover:rotate-45 transition-transform duration-500">
-                      <ArrowUpRight className="w-4 h-4" />
-                    </span>
+                  <label className="block">
+                    <span className="mb-2 block text-sm font-semibold text-neutral-800">Email</span>
+                    <input required value={email} onChange={(e) => setEmail(e.target.value)} type="email" autoComplete="email" className={`${field} h-12`} placeholder="you@company.com" />
+                  </label>
+                  <label className="block">
+                    <span className="mb-2 block text-sm font-semibold text-neutral-800">Message</span>
+                    <textarea required value={message} onChange={(e) => setMessage(e.target.value)} rows={5} className={`${field} resize-none py-3`} placeholder="Tell us about your freight operation" />
+                  </label>
+                  <button
+                    type="submit"
+                    className="group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-7 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-red-700 sm:w-auto"
+                  >
+                    Send message
+                    <ArrowRight className="h-[17px] w-[17px] transition-transform group-hover:translate-x-0.5" />
                   </button>
                 </form>
               )}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
       <SiteFooter />
     </div>

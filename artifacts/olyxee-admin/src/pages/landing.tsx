@@ -13,8 +13,6 @@ import {
   Mail,
   Ship,
   Plane,
-  Menu,
-  X,
   ShieldCheck,
   Globe,
   Smartphone,
@@ -30,7 +28,7 @@ import {
   Building2,
 } from "lucide-react";
 import warehouseOperator from "@assets/warehouse-operator-web.jpg";
-import airCargoImg from "@assets/air-cargo-web.jpg";
+import airCargoImg from "@assets/air-freight-web.jpg";
 // Photos from Pexels (free licence, no attribution required): hero by Oleksiy (pexels.com/photo/38424255), sea banner by Martin Hungerbuehler (pexels.com/photo/20821680).
 import heroPortImg from "@assets/hero-port-web.jpg";
 import shipSeaImg from "@assets/ship-sea-web.jpg";
@@ -51,12 +49,6 @@ const BUILT_FOR = [
   "Import and export agents",
 ];
 
-const PAIN_POINTS = [
-  { pain: "Customers chase you for status", fix: "A branded tracking page answers for you." },
-  { pain: "Job records live in five places", fix: "One record per job." },
-  { pain: "Profit is a guess until month-end", fix: "Margin on every job, straight away." },
-];
-
 const DEMO_CUSTOMERS = [
   { name: "Cape Cargo Imports", initials: "CC", phone: "+27 83 902 7714", address: "Foreshore · Cape Town" },
 ];
@@ -73,8 +65,6 @@ const FREE_PLAN_ITEMS = [
   "Up to 100 status updates per month",
 ];
 
-const STARTER_PRICE = `R${plans.free.price}`;
-const SCALE_PRICE = `R${plans.business.price}`;
 const SCALE_PREVIEW = (plans.business.comingSoon ?? []).slice(0, 4);
 
 // ─── Helpers ────────────────────────────────────────────────────────────
@@ -86,45 +76,60 @@ const ZAR = (n: number) => `R${n.toLocaleString("en-ZA").replace(/,/g, " ")}`;
 
 type GoTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => void;
 
-const Nav: FC<{ open: boolean; setOpen: (v: boolean) => void; goTo: GoTo }> = ({ open, setOpen, goTo }) => (
-  <header className="fixed top-0 inset-x-0 z-50 border-b border-neutral-200 bg-white">
-    <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <Link href="/" className="flex items-center gap-2.5">
-        <img src={freighticsLogo} alt="Freightics" className="h-9 w-9 object-contain" />
-        <span className="text-[15px] font-bold tracking-tight text-neutral-950 font-ui">Freightics</span>
-      </Link>
+export const Nav: FC = () => {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-      <nav className="hidden md:flex items-center gap-7 font-ui">
-        <Link href="/upgrade" className="text-[13px] font-medium text-neutral-600 hover:text-neutral-950 transition-colors">
-          Pricing
-        </Link>
-        <Link href="/login?mode=signup" className="text-[13px] font-semibold px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors">
-          Create workspace
-        </Link>
-      </nav>
-
-      <button className="md:hidden text-neutral-600 hover:text-neutral-950" onClick={() => setOpen(!open)} aria-label="Toggle menu">
-        {open ? <X size={20} /> : <Menu size={20} />}
-      </button>
-    </div>
-
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          className="md:hidden absolute top-16 inset-x-0 border-b border-neutral-200 bg-white shadow-xl"
+  return (
+    <header
+      className={`fixed top-0 inset-x-0 z-50 border-b transition-[background-color,box-shadow,border-color] duration-300 ${
+        scrolled
+          ? "border-neutral-200 bg-white/95 shadow-[0_2px_16px_rgba(0,0,0,0.07)] backdrop-blur"
+          : "border-transparent bg-transparent shadow-none"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3">
+        <Link
+          href="/"
+          aria-label="Freightics home"
+          className="flex items-center gap-2 sm:gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600/40"
         >
-          <div className="px-6 py-5 flex flex-col gap-4 font-ui">
-            <Link href="/upgrade" className="text-base font-medium text-neutral-700" onClick={() => setOpen(false)}>Pricing</Link>
-            <Link href="/login?mode=signup" className="text-base font-semibold text-red-600" onClick={() => setOpen(false)}>Create workspace</Link>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  </header>
-);
+          <img src={freighticsLogo} alt="" className="h-8 w-8 sm:h-9 sm:w-9 object-contain" />
+          <span className="text-sm sm:text-base font-bold tracking-tight text-neutral-950 font-ui max-[369px]:hidden">Freightics</span>
+        </Link>
+
+        <nav className="flex items-center gap-1 sm:gap-3 font-ui" aria-label="Main">
+          {[
+            ["Pricing", "/upgrade"],
+            ["Contact", "/contact"],
+          ].map(([label, href]) => (
+            <Link
+              key={href}
+              href={href}
+              className={`inline-flex h-10 items-center rounded-md px-1.5 text-[13px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600/40 min-[400px]:px-3 min-[400px]:text-sm ${
+                scrolled ? "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950" : "text-neutral-900 hover:bg-white/60"
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+          <Link
+            href="/login?mode=signup"
+            className="inline-flex h-10 items-center whitespace-nowrap rounded-lg bg-red-600 px-3 text-[13px] sm:px-5 sm:text-sm font-semibold text-white shadow-sm hover:bg-red-700 active:bg-red-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600/50 focus-visible:ring-offset-2"
+          >
+            <span className="min-[400px]:hidden">Get started</span>
+            <span className="hidden min-[400px]:inline">Create workspace</span>
+          </Link>
+        </nav>
+      </div>
+    </header>
+  );
+};
 
 // A faithful miniature of the customer tracking page, driven by the product's
 // real sea-freight stage list so the wording always matches the app.
@@ -252,34 +257,97 @@ const BuiltForStrip: FC = () => (
   </section>
 );
 
-const ProblemSection: FC = () => (
-  <section className="bg-neutral-50 py-20 md:py-28">
-    <div className="mx-auto max-w-7xl px-6">
-      <h2 className="max-w-3xl font-editorial text-4xl leading-[1.05] text-neutral-950 text-balance md:text-5xl">
-        The cargo moves. The admin around it shouldn’t slow you down.
-      </h2>
+// Spreadsheet mark used in place of one letter "e" in the heading below.
+const ExcelMark: FC = () => (
+  <svg viewBox="1 0 30 32" aria-hidden className="mx-[0.02em] inline-block h-[0.82em] w-[0.77em] align-[-0.06em]">
+    <defs>
+      <clipPath id="excel-sheet">
+        <rect x="10" y="2" width="20" height="28" rx="2.2" />
+      </clipPath>
+    </defs>
+    <g clipPath="url(#excel-sheet)">
+      <rect x="10" y="2" width="20" height="7" fill="#33C481" />
+      <rect x="10" y="9" width="20" height="7" fill="#21A366" />
+      <rect x="10" y="16" width="20" height="7" fill="#107C41" />
+      <rect x="10" y="23" width="20" height="7" fill="#185C37" />
+    </g>
+    <rect x="1.5" y="7" width="17" height="18" rx="2.2" fill="#107C41" />
+    <path d="M6.6 11.8 13.4 20.2M13.4 11.8 6.6 20.2" stroke="#fff" strokeWidth="2.3" strokeLinecap="round" fill="none" />
+  </svg>
+);
 
-      <div className="mt-12 grid gap-5 md:grid-cols-3">
-        {PAIN_POINTS.map((p, i) => (
-          <div key={p.pain} className="flex flex-col rounded-xl border border-neutral-200 bg-white p-7">
-            <span className="font-code text-xs text-neutral-400">{String(i + 1).padStart(2, "0")}</span>
-            <h3 className="mt-4 text-xl font-bold leading-snug text-neutral-950 font-ui">{p.pain}</h3>
-            <div className="mt-6 flex items-start gap-2.5 border-t border-neutral-100 pt-5">
-              <Check size={18} className="mt-0.5 shrink-0 text-red-600" strokeWidth={3} />
-              <p className="text-[15px] font-medium leading-snug text-neutral-800 font-ui">{p.fix}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+const ProblemSection: FC = () => (
+  <section className="bg-white py-24 md:py-32">
+    <div className="mx-auto max-w-5xl px-6 text-center">
+      <h2 className="font-editorial text-4xl leading-[1.04] text-neutral-950 text-balance sm:text-5xl md:text-6xl lg:text-7xl">
+        <span className="sr-only">Fewer calls. Fewer spreadsheets. Every freight job under control.</span>
+        <span aria-hidden>
+          Fewer calls. Fewer spreadsh
+          <ExcelMark />
+          ets. <span className="text-red-600">Every freight job under control.</span>
+        </span>
+      </h2>
     </div>
   </section>
 );
 
 type Mode = "SEA" | "AIR";
 
+const MODE_WORDS: { word: string; mode: Mode; colour: string }[] = [
+  { word: "sea", mode: "SEA", colour: "text-sky-600" },
+  { word: "air", mode: "AIR", colour: "text-red-600" },
+];
+
 const WorkflowSection: FC = () => {
   const [mode, setMode] = useState<Mode>("SEA");
+  const [typed, setTyped] = useState("sea");
+  const [auto, setAuto] = useState(
+    () => typeof window === "undefined" || !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   const flow = [...(logisticsFlow(mode) ?? [])];
+
+  // The headline word types itself out, holds, deletes and swaps. The tabs, photo
+  // and stage list switch the moment the word changes. Clicking a tab takes over.
+  useEffect(() => {
+    if (!auto) return;
+    let idx = 0;
+    let n = MODE_WORDS[0].word.length;
+    let dir: "del" | "type" = "del";
+    let t: number;
+    const tick = () => {
+      const w = MODE_WORDS[idx].word;
+      if (dir === "del") {
+        n -= 1;
+        setTyped(w.slice(0, Math.max(0, n)));
+        if (n <= 0) {
+          idx = (idx + 1) % MODE_WORDS.length;
+          dir = "type";
+          setMode(MODE_WORDS[idx].mode);
+          t = window.setTimeout(tick, 260);
+        } else {
+          t = window.setTimeout(tick, 80);
+        }
+        return;
+      }
+      n += 1;
+      setTyped(w.slice(0, n));
+      if (n >= w.length) {
+        dir = "del";
+        t = window.setTimeout(tick, 4200);
+      } else {
+        t = window.setTimeout(tick, 120);
+      }
+    };
+    t = window.setTimeout(tick, 4200);
+    return () => window.clearTimeout(t);
+  }, [auto]);
+
+  const pickMode = (m: Mode) => {
+    setAuto(false);
+    setMode(m);
+    setTyped(MODE_WORDS.find((w) => w.mode === m)!.word);
+  };
+  const wordColour = MODE_WORDS.find((w) => w.mode === mode)!.colour;
 
   const callouts = [
     { icon: ShieldCheck, title: "Shipment and billing tracked separately", body: "Prepaid or postpaid, per job." },
@@ -293,7 +361,12 @@ const WorkflowSection: FC = () => {
         <div className="mb-12 flex flex-col justify-between gap-8 md:mb-14 md:flex-row md:items-end">
           <div className="max-w-2xl">
             <h2 className="font-editorial text-4xl leading-[1.05] text-neutral-950 text-balance md:text-5xl">
-              Every stage of an air or sea job, in order.
+              Every stage of every{" "}
+              <span className={`inline-block min-w-[1.9em] whitespace-nowrap transition-colors duration-300 ${wordColour}`}>
+                {typed}
+                {auto && <span aria-hidden className="ml-0.5 inline-block h-[0.8em] w-[3px] translate-y-[0.06em] animate-pulse bg-current" />}
+              </span>{" "}
+              job, in order.
             </h2>
           </div>
 
@@ -303,7 +376,7 @@ const WorkflowSection: FC = () => {
                 key={m}
                 role="tab"
                 aria-selected={mode === m}
-                onClick={() => setMode(m)}
+                onClick={() => pickMode(m)}
                 className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors ${mode === m ? "bg-white text-neutral-950 shadow-sm" : "text-neutral-500 hover:text-neutral-800"}`}
               >
                 {m === "SEA" ? <Ship size={16} /> : <Plane size={16} />}
@@ -319,12 +392,12 @@ const WorkflowSection: FC = () => {
               <motion.img
                 key={mode}
                 src={mode === "SEA" ? shipSeaImg : airCargoImg}
-                alt={mode === "SEA" ? "Container ship at sea" : "Air cargo being loaded onto an aircraft"}
+                alt={mode === "SEA" ? "Container ship at sea" : "Cargo aircraft on approach"}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className={`absolute inset-0 h-full w-full object-cover ${mode === "SEA" ? "object-[50%_62%]" : "object-[50%_45%]"}`}
+                className={`absolute inset-0 h-full w-full object-cover ${mode === "SEA" ? "object-[50%_62%]" : "object-[50%_44%]"}`}
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/80 via-neutral-950/40 to-transparent" />
@@ -372,7 +445,6 @@ const WorkflowSection: FC = () => {
 // own Button / Input / Label / StatusBadge components and theme tokens so it
 // looks exactly like the product. Plays the create-a-job flow on a loop.
 
-const DEMO_STEP_SUBTITLES = ["Who is this Job for?", "Where's it going and what's inside?", "Reference and how it's billed"];
 const DEMO_STEP_LABELS = ["Customer", "Shipment", "Billing"];
 const demoField = "h-11 rounded-xl border-transparent bg-muted/50 shadow-none";
 
@@ -396,6 +468,57 @@ const DEMO_JOBS = [
 ];
 const DEMO_NEW_JOB = { job: "FSL-0023-2026", customer: "Cape Cargo Imports", route: "Shenzhen → Durban", mode: "SEA", status: "ORDER_CONFIRMED", billing: "Awaiting payment" };
 
+// Types the text out one character at a time once run is true, after delay ms.
+// Resets to empty when run goes false, so every loop starts clean.
+function useTyped(text: string, run: boolean, delay = 0, speed = 34) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (!run) {
+      setN(0);
+      return;
+    }
+    let i = 0;
+    let iv: number | undefined;
+    const t = window.setTimeout(() => {
+      iv = window.setInterval(() => {
+        i += 1;
+        setN(i);
+        if (i >= text.length) window.clearInterval(iv);
+      }, speed);
+    }, delay);
+    return () => {
+      window.clearTimeout(t);
+      if (iv) window.clearInterval(iv);
+    };
+  }, [text, run, delay, speed]);
+  return text.slice(0, n);
+}
+
+// "Camera" moves for the demo: zoom in on whatever is being filled in, ease back
+// out between steps. The origin stays centred so the moves never jump.
+const clampTo = (v: number, m: number) => Math.max(-m, Math.min(m, v));
+const CAMERA: [number, number, number][] = [
+  [1, 0.5, 0.5], //        0 dialog opens
+  [1.24, 0.5, 0.47], //    1 customer picker
+  [1.24, 0.5, 0.47], //    2 customer chosen
+  [1.2, 0.5, 0.52], //     3 shipment details typing
+  [1.1, 0.5, 0.52], //     4 shipment done
+  [1.2, 0.5, 0.56], //     5 billing typing
+  [1.22, 0.5, 0.66], //    6 creating
+  [1.32, 0.6, 0.36], //    7 new job lands in the list
+];
+// On phones the dialog already fills the width, so the zoom is much gentler.
+const camFor = (phase: number, narrow: boolean) => {
+  const [s0, fx0, fy] = CAMERA[phase];
+  const scale = narrow ? 1 + (s0 - 1) * 0.35 : s0;
+  const fx = narrow ? 0.5 : fx0;
+  return {
+    scale,
+    x: `${clampTo(-scale * (fx - 0.5), (scale - 1) / 2) * 100}%`,
+    y: `${clampTo(-scale * (fy - 0.5), (scale - 1) / 2) * 100}%`,
+  };
+};
+
 const DemoInput: FC<{ value?: string; placeholder?: string; mono?: boolean }> = ({ value = "", placeholder, mono }) => (
   <Input readOnly tabIndex={-1} value={value} placeholder={placeholder} className={`${demoField} ${mono ? "font-mono" : ""}`} />
 );
@@ -414,171 +537,150 @@ const DemoDialog: FC<{ phase: number }> = ({ phase }) => {
   const step = phase < 3 ? 1 : phase < 5 ? 2 : 3;
   const pickerOpen = phase === 1;
   const customerChosen = phase >= 2;
-  const shipmentFilled = phase >= 4;
-  const amountsFilled = phase >= 6;
-  const creating = phase === 7;
+  const creating = phase === 6;
+
+  const shipRun = phase >= 3;
+  const billRun = phase >= 5;
+  const modePicked = useTyped("x", shipRun, 150).length > 0;
+  const origin = useTyped("China", shipRun, 350);
+  const destination = useTyped("South Africa", shipRun, 800, 28);
+  const cargo = useTyped("Consumer electronics", shipRun, 1300, 24);
+  const weight = useTyped("120", shipRun, 1850, 60);
+  const prepaidPicked = useTyped("x", billRun, 150).length > 0;
+  const subtotal = useTyped("48600", billRun, 450, 55);
+  const cost = useTyped("39120", billRun, 1150, 55);
 
   return (
-    <div className="w-full max-w-[560px] rounded-3xl border bg-background shadow-2xl">
+    <div className="w-full max-w-[540px] rounded-3xl border bg-background shadow-2xl">
       <div className="px-7 pb-0 pt-7 text-left">
         <h3 className="text-[22px] font-semibold tracking-tight">New Job</h3>
-        <p className="pt-1 text-[15px] text-muted-foreground">{DEMO_STEP_SUBTITLES[step - 1]}</p>
-        <div className="flex items-center gap-1.5 pt-5">
+        <div className="grid grid-cols-3 gap-1.5 pt-5">
           {DEMO_STEP_LABELS.map((lbl, i) => (
-            <div key={lbl} className={`h-1.5 flex-1 rounded-full transition-colors duration-500 ${i + 1 <= step ? "bg-primary" : "bg-muted"}`} />
+            <div key={lbl}>
+              <div className={`h-1.5 rounded-full transition-colors duration-500 ${i + 1 <= step ? "bg-primary" : "bg-muted"}`} />
+              <p className={`pt-2 text-xs font-medium transition-colors duration-500 ${i + 1 === step ? "text-foreground" : "text-muted-foreground"}`}>{lbl}</p>
+            </div>
           ))}
         </div>
-        <p className="pt-2 text-xs font-medium text-muted-foreground">Step {step} of 3 · {DEMO_STEP_LABELS[step - 1]}</p>
       </div>
 
-      <div className="px-7 py-6">
-        {step === 1 && (
-          <div className="relative space-y-2.5">
-            <DemoLabel>Customer</DemoLabel>
-            <Button type="button" variant="outline" tabIndex={-1} className={`w-full justify-between px-3.5 font-normal ${demoField}`}>
-              <span className={`truncate ${customerChosen ? "" : "text-muted-foreground"}`}>
-                {customerChosen ? DEMO_CUSTOMER_OPTIONS[0] : "Select a customer"}
-              </span>
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
-            </Button>
-            {pickerOpen && (
-              <div className="absolute inset-x-0 top-[74px] z-10 overflow-hidden rounded-xl border bg-popover text-popover-foreground shadow-md">
-                <div className="flex items-center gap-2 border-b px-3 py-2.5 text-sm text-muted-foreground">
-                  <Search className="h-4 w-4 opacity-50" /> Search by name, email or company…
+      <div className="px-7 pb-7 pt-5">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: 18 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -18 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            {step === 1 && (
+              <div className="relative min-h-[236px] space-y-2.5">
+                <DemoLabel>Customer</DemoLabel>
+                <Button type="button" variant="outline" tabIndex={-1} className={`w-full justify-between px-3.5 font-normal ${demoField}`}>
+                  <span className={`truncate ${customerChosen ? "" : "text-muted-foreground"}`}>
+                    {customerChosen ? DEMO_CUSTOMER_OPTIONS[0] : "Select a customer"}
+                  </span>
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-40" />
+                </Button>
+                <AnimatePresence>
+                  {pickerOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.18 }}
+                      className="absolute inset-x-0 top-[74px] z-10 overflow-hidden rounded-xl border bg-popover text-popover-foreground shadow-md"
+                    >
+                      <div className="flex items-center gap-2 border-b px-3 py-2.5 text-sm text-muted-foreground">
+                        <Search className="h-4 w-4 opacity-50" /> Search by name, email or company…
+                      </div>
+                      <div className="p-1">
+                        {DEMO_CUSTOMER_OPTIONS.map((label, i) => (
+                          <motion.div
+                            key={label}
+                            initial={{ backgroundColor: "hsl(var(--accent) / 0)" }}
+                            animate={{ backgroundColor: i === 0 ? "hsl(var(--accent))" : "hsl(var(--accent) / 0)" }}
+                            transition={{ delay: i === 0 ? 0.45 : 0, duration: 0.15 }}
+                            className="flex items-center rounded-md px-2 py-2 text-sm"
+                          >
+                            <Check className="mr-2 h-4 w-4 opacity-0" />
+                            <span className="truncate">{label}</span>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="space-y-5">
+                <div className="grid grid-cols-2 gap-2.5">
+                  {[
+                    { id: "AIR", label: "Air Freight", Icon: Plane },
+                    { id: "SEA", label: "Sea Freight", Icon: Ship },
+                  ].map(({ id, label, Icon }) => {
+                    const on = modePicked && id === "SEA";
+                    return (
+                      <div key={id} className={`flex h-12 items-center justify-center gap-2 rounded-xl border text-sm font-medium transition-all duration-300 ${on ? "scale-[1.02] border-primary bg-primary/[0.06] text-foreground shadow-sm" : "border-border/70 bg-muted/30 text-muted-foreground"}`}>
+                        <Icon className="h-4 w-4" />{label}
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="p-1">
-                  {DEMO_CUSTOMER_OPTIONS.map((label, i) => (
-                    <div key={label} className={`flex items-center rounded-md px-2 py-2 text-sm ${i === 0 ? "bg-accent text-accent-foreground" : ""}`}>
-                      <Check className="mr-2 h-4 w-4 opacity-0" />
-                      <span className="truncate">{label}</span>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2"><DemoLabel>Origin</DemoLabel><DemoInput value={origin} placeholder="China" /></div>
+                  <div className="space-y-2"><DemoLabel>Destination</DemoLabel><DemoInput value={destination} placeholder="South Africa" /></div>
+                  <div className="space-y-2"><DemoLabel>Cargo / invoice item</DemoLabel><DemoInput value={cargo} placeholder="e.g. Handbags" /></div>
+                  <div className="space-y-2">
+                    <DemoLabel>Weight</DemoLabel>
+                    <div className="relative">
+                      <DemoInput value={weight} placeholder="0" />
+                      <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs font-medium text-muted-foreground">kg</span>
                     </div>
-                  ))}
+                  </div>
                 </div>
               </div>
             )}
-            <p className="text-[13px] text-muted-foreground">They'll receive the invoice and shipment updates.</p>
-          </div>
-        )}
 
-        {step === 2 && (
-          <div className="space-y-6">
-            <div className="space-y-2.5">
-              <DemoLabel>Transport mode</DemoLabel>
-              <div className="grid grid-cols-2 gap-2.5">
-                {[
-                  { id: "AIR", label: "Air Freight", Icon: Plane },
-                  { id: "SEA", label: "Sea Freight", Icon: Ship },
-                ].map(({ id, label, Icon }) => {
-                  const on = shipmentFilled && id === "SEA";
-                  return (
-                    <div key={id} className={`flex h-12 items-center justify-center gap-2 rounded-xl border text-sm font-medium transition-all ${on ? "border-primary bg-primary/[0.06] text-foreground shadow-sm" : "border-border/70 bg-muted/30 text-muted-foreground"}`}>
-                      <Icon className="h-4 w-4" />{label}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[
-                ["Origin", "China", "China"],
-                ["Destination", "South Africa", "South Africa"],
-                ["Cargo / invoice item", "Consumer electronics", "e.g. Handbags"],
-                ["Service required", "Port-to-door", "e.g. Customs & tax"],
-              ].map(([label, value, ph]) => (
-                <div key={label} className="space-y-2">
-                  <DemoLabel>{label}</DemoLabel>
-                  <DemoInput value={shipmentFilled ? value : ""} placeholder={ph} />
-                </div>
-              ))}
-            </div>
-            <div className="space-y-3 rounded-2xl border border-border/70 bg-muted/20 p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <Label className="text-[13px] font-medium">Boxes</Label>
-                  <p className="mt-1 text-xs text-muted-foreground">Add each piece. Dimensions are optional and use centimetres.</p>
-                </div>
-                <div className="shrink-0 text-right">
-                  <p className="text-sm font-semibold">1 box</p>
-                  <p className="text-xs text-muted-foreground">{shipmentFilled ? "120 kg total" : "Add weights"}</p>
-                </div>
-              </div>
-              <div className="rounded-xl border bg-background p-3">
-                <span className="mb-2.5 block text-xs font-semibold">Box 1</span>
-                <div className="grid grid-cols-4 gap-2.5">
+            {step === 3 && (
+              <div className="space-y-5">
+                <div className="grid gap-2.5 sm:grid-cols-2">
                   {[
-                    ["Weight", "120", "kg"],
-                    ["Length", "80", "cm"],
-                    ["Width", "60", "cm"],
-                    ["Height", "60", "cm"],
-                  ].map(([label, value, unit]) => (
-                    <div key={label} className="min-w-0 space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">{label}</Label>
-                      <div className="relative min-w-0">
-                        <Input readOnly tabIndex={-1} value={shipmentFilled ? value : ""} placeholder="0" className="h-10 min-w-0 rounded-lg pr-8" />
-                        <span className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-[10px] font-medium text-muted-foreground">{unit}</span>
+                    ["PREPAID", "Invoice before delivery"],
+                    ["POSTPAID", "Invoice after delivery"],
+                  ].map(([value, title]) => {
+                    const on = prepaidPicked && value === "PREPAID";
+                    return (
+                      <div key={value} className={`relative rounded-2xl border p-4 text-left transition-all duration-300 ${on ? "scale-[1.02] border-primary bg-primary/[0.05] shadow-sm" : "border-border/70 bg-muted/30"}`}>
+                        <span className={`absolute right-3 top-3 grid h-4 w-4 place-items-center rounded-full border transition-colors ${on ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>{on && <Check className="h-3 w-3" />}</span>
+                        <div className="pr-5 text-sm font-semibold">{title}</div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
+                </div>
+                <div className="space-y-3 rounded-2xl bg-muted/40 p-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-[13px] font-medium">Invoice amount</Label>
+                    <span className="text-lg font-semibold tabular-nums">ZAR {subtotal ? Number(subtotal).toFixed(2) : "0.00"}</span>
+                  </div>
+                  <Input readOnly tabIndex={-1} value={subtotal} placeholder="Subtotal" className="h-11 rounded-xl bg-background" />
+                </div>
+                <div className="space-y-2 rounded-2xl border border-dashed border-border bg-muted/20 p-4">
+                  <Label className="text-[13px] font-medium">Your cost <span className="font-normal text-muted-foreground">(internal only)</span></Label>
+                  <Input readOnly tabIndex={-1} value={cost} placeholder="Cost in ZAR" className="h-11 rounded-xl bg-background" />
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+            )}
+          </motion.div>
+        </AnimatePresence>
 
-        {step === 3 && (
-          <div className="space-y-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <DemoLabel>Job Number</DemoLabel>
-                <DemoInput value="FSL-0023-2026" mono />
-              </div>
-              <div className="space-y-2">
-                <DemoLabel>Est. delivery (optional)</DemoLabel>
-                <DemoInput placeholder="dd/mm/yyyy" />
-              </div>
-            </div>
-            <div className="space-y-2.5">
-              <DemoLabel>Billing</DemoLabel>
-              <div className="grid gap-2.5 sm:grid-cols-2">
-                {[
-                  ["PREPAID", "Invoice before delivery", "Invoice and payment before the shipment moves."],
-                  ["POSTPAID", "Invoice after delivery", "Ship first, invoice once it's delivered."],
-                ].map(([value, title, desc]) => {
-                  const on = value === "PREPAID";
-                  return (
-                    <div key={value} className={`relative rounded-2xl border p-4 text-left ${on ? "border-primary bg-primary/[0.05] shadow-sm" : "border-border/70 bg-muted/30"}`}>
-                      <span className={`absolute right-3 top-3 grid h-4 w-4 place-items-center rounded-full border ${on ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>{on && <Check className="h-3 w-3" />}</span>
-                      <div className="pr-5 text-sm font-semibold">{title}</div>
-                      <div className="mt-1 text-xs leading-relaxed text-muted-foreground">{desc}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="space-y-3 rounded-2xl bg-muted/40 p-4">
-              <div className="flex items-center justify-between">
-                <Label className="text-[13px] font-medium">Invoice amount (ZAR)</Label>
-                <span className="text-lg font-semibold">ZAR {amountsFilled ? "48600.00" : "0.00"}</span>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Input readOnly tabIndex={-1} value={amountsFilled ? "48600" : ""} placeholder="Subtotal" className="h-11 rounded-xl bg-background" />
-                <Input readOnly tabIndex={-1} value="" placeholder="Additional charges" className="h-11 rounded-xl bg-background" />
-              </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">Sent as <strong className="font-medium text-foreground">Pending payment</strong>. The shipment stays locked until you confirm payment.</p>
-            </div>
-            <div className="space-y-2 rounded-2xl border border-dashed border-border bg-muted/20 p-4">
-              <Label className="text-[13px] font-medium">Your cost for this Job <span className="font-normal text-muted-foreground">(optional)</span></Label>
-              <Input readOnly tabIndex={-1} value={amountsFilled ? "39120" : ""} placeholder="Internal cost in ZAR" className="h-11 rounded-xl bg-background" />
-              <p className="text-xs leading-relaxed text-muted-foreground">Internal only. This is never shown to the customer and is used to calculate profit for this Job.</p>
-            </div>
-          </div>
-        )}
-
-        <div className="mt-8 flex items-center gap-2.5">
+        <div className="mt-6 flex items-center gap-2.5">
           {step > 1 && (
             <Button type="button" variant="ghost" tabIndex={-1} className="h-12 rounded-xl px-5 text-muted-foreground">Back</Button>
           )}
-          <Button type="button" tabIndex={-1} disabled={step === 1 && !customerChosen} className="h-12 flex-1 rounded-xl text-[15px] font-medium">
+          <Button type="button" tabIndex={-1} disabled={step === 1 && !customerChosen} className={`h-12 flex-1 rounded-xl text-[15px] font-medium transition-transform duration-150 ${creating ? "scale-[0.98]" : ""}`}>
             {step < 3 ? "Continue" : creating ? "Creating…" : "Create Job & send invoice"}
           </Button>
         </div>
@@ -609,21 +711,27 @@ const AppDemo: FC = () => {
 
   useEffect(() => {
     if (reduced) {
-      setPhase(8);
+      setPhase(7);
       return;
     }
-    // phases: 0 empty, 1 picker open, 2 customer chosen, 3 shipment step,
-    // 4 shipment filled, 5 billing step, 6 amounts filled, 7 creating, 8 done.
-    const durations = [1200, 1500, 1000, 900, 2400, 1000, 2400, 900, 4800];
+    // phases: 0 dialog opens, 1 picker open, 2 customer chosen, 3 shipment
+    // details typing, 4 shipment done, 5 billing typing, 6 creating, 7 done.
+    const durations = [700, 1100, 700, 2500, 500, 2500, 900, 3800];
     const id = window.setTimeout(() => setPhase((p) => (p + 1) % durations.length), durations[phase]);
     return () => window.clearTimeout(id);
   }, [phase, reduced]);
 
-  const dialogOpen = phase < 8;
+  const dialogOpen = phase < 7;
+  const [narrow] = useState(() => typeof window !== "undefined" && window.innerWidth < 640);
 
   return (
-    <div role="img" aria-label="The Freightics Jobs screen with the New Job form being filled in" className="pointer-events-none mx-auto w-full max-w-6xl select-none overflow-hidden rounded-2xl border border-neutral-200 bg-background shadow-[0_30px_80px_-40px_rgba(0,0,0,0.45)]">
-      <div className="relative flex h-[800px] lg:h-[780px]">
+    <div role="img" aria-label="The Freightics Jobs screen with the New Job form being filled in" className="pointer-events-none w-full select-none overflow-hidden bg-background">
+      <motion.div
+        className="relative flex h-[660px] will-change-transform md:h-[800px] lg:h-[780px]"
+        initial={false}
+        animate={camFor(reduced ? 0 : phase, narrow)}
+        transition={{ duration: phase === 0 ? 1 : 0.9, ease: [0.45, 0, 0.2, 1] }}
+      >
         <aside className="hidden w-[220px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground md:flex">
           <div className="flex h-14 min-w-0 flex-shrink-0 items-center gap-2.5 border-b border-sidebar-border px-5">
             <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-primary shadow-sm">
@@ -676,7 +784,7 @@ const AppDemo: FC = () => {
                 <span className="hidden md:block">Billing</span>
               </div>
               <AnimatePresence initial={false}>
-                {phase >= 8 && (
+                {phase >= 7 && (
                   <motion.div key="new-job" initial={{ opacity: 0, backgroundColor: "hsl(var(--primary) / 0.1)" }} animate={{ opacity: 1, backgroundColor: "hsl(var(--primary) / 0)" }} transition={{ duration: 1.2 }}>
                     <DemoJobRow job={DEMO_NEW_JOB} />
                   </motion.div>
@@ -689,17 +797,49 @@ const AppDemo: FC = () => {
           </main>
         </div>
 
-        {dialogOpen && (
-          <div className="absolute inset-0 z-10 grid place-items-center bg-black/55 p-3">
-            <div className="flex max-h-full w-full justify-center [zoom:0.68] sm:[zoom:0.84]">
-              <DemoDialog phase={phase} />
-            </div>
-          </div>
-        )}
-      </div>
+        <AnimatePresence>
+          {dialogOpen && (
+            <motion.div
+              key="dialog"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.35 }}
+              className="absolute inset-0 z-10 grid place-items-center bg-black/55 p-3"
+            >
+              <motion.div
+                initial={{ scale: 0.94, y: 14 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.97, y: -8, opacity: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="flex max-h-full w-full justify-center [zoom:0.68] sm:[zoom:0.84]"
+              >
+                <DemoDialog phase={phase} />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 };
+
+// A device around the demo: an iPhone on phones, a MacBook from tablet width up.
+const DeviceFrame: FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="relative mx-auto w-full max-w-[336px] md:max-w-5xl">
+    <div className="relative rounded-[2.9rem] bg-neutral-900 p-[10px] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.5)] ring-1 ring-black/30 md:rounded-b-md md:rounded-t-[1.1rem] md:p-[11px] md:pt-[13px]">
+      <span aria-hidden className="absolute -left-[3px] top-24 h-7 w-[3px] rounded-l bg-neutral-700 md:hidden" />
+      <span aria-hidden className="absolute -left-[3px] top-36 h-12 w-[3px] rounded-l bg-neutral-700 md:hidden" />
+      <span aria-hidden className="absolute -right-[3px] top-32 h-16 w-[3px] rounded-r bg-neutral-700 md:hidden" />
+      <span aria-hidden className="absolute left-1/2 top-[19px] z-30 h-[24px] w-[88px] -translate-x-1/2 rounded-full bg-black md:hidden" />
+      <span aria-hidden className="absolute left-1/2 top-[4px] z-30 hidden h-[5px] w-[5px] -translate-x-1/2 rounded-full bg-neutral-600 md:block" />
+      <div className="relative overflow-hidden rounded-[2.2rem] bg-background md:rounded-[0.35rem]">{children}</div>
+    </div>
+    <div aria-hidden className="relative -mx-[3%] hidden h-3.5 rounded-b-[1.3rem] bg-gradient-to-b from-neutral-300 via-neutral-200 to-neutral-400 shadow-[0_22px_30px_-14px_rgba(0,0,0,0.4)] md:block">
+      <span className="absolute left-1/2 top-0 h-1.5 w-28 -translate-x-1/2 rounded-b-lg bg-neutral-400/80" />
+    </div>
+  </div>
+);
 
 const JobDemoSection: FC = () => (
   <section className="bg-neutral-50 py-20 md:py-28">
@@ -707,7 +847,9 @@ const JobDemoSection: FC = () => (
       <h2 className="mx-auto mb-12 max-w-2xl text-center font-editorial text-4xl leading-[1.05] text-neutral-950 text-balance md:mb-14 md:text-5xl">
         Create a job in three steps.
       </h2>
-      <AppDemo />
+      <DeviceFrame>
+        <AppDemo />
+      </DeviceFrame>
     </div>
   </section>
 );
@@ -757,7 +899,7 @@ const PhoneTracking: FC = () => {
   const visible = flow.slice(start, current + 4);
 
   return (
-    <div className="overflow-hidden rounded-t-[2rem] border-[6px] border-b-0 border-neutral-900 bg-white text-neutral-950 shadow-2xl">
+    <div className="overflow-hidden rounded-t-[2rem] border-[6px] border-b-0 border-neutral-700 bg-white text-neutral-950 shadow-2xl">
       <div className="flex items-center gap-2.5 border-b border-neutral-100 px-5 py-4 font-ui">
         <span className="grid h-7 w-7 place-items-center rounded-md bg-neutral-900 text-[10px] font-bold text-white">TB</span>
         <span className="text-[13px] font-semibold">Table Bay Freight</span>
@@ -765,8 +907,8 @@ const PhoneTracking: FC = () => {
       <div className="px-5 py-5 font-ui">
         <p className="font-code text-sm font-medium">TBF-K7M-9X2A</p>
         <p className="mt-0.5 text-xs text-neutral-500">Shenzhen to Durban · ETA 12 Dec</p>
-        <div className="mt-4 rounded-lg bg-neutral-50 px-3.5 py-3">
-          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-neutral-400">Current status</p>
+        <div className="mt-4 rounded-lg bg-red-600 px-3.5 py-3 text-white">
+          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-red-100">Current status</p>
           <p className="mt-0.5 text-[15px] font-bold">{logisticsStatusLabel(currentCode)}</p>
         </div>
         <ol className="mt-4">
@@ -814,12 +956,12 @@ const CustomerExperienceSection: FC = () => (
           </div>
         </div>
 
-        <div className="flex min-h-[500px] flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-100 font-ui">
+        <div className="flex min-h-[500px] flex-col overflow-hidden rounded-2xl bg-neutral-950 bg-[radial-gradient(120%_75%_at_50%_112%,rgba(220,38,38,0.75),rgba(220,38,38,0.18)_45%,transparent_72%)] font-ui">
           <div className="p-8 pb-0 md:p-10 md:pb-0">
-            <h3 className="text-2xl font-bold tracking-tight">Customers track it themselves.</h3>
+            <h3 className="text-2xl font-bold tracking-tight text-white">Customers track it themselves.</h3>
             <ul className="mt-5 flex flex-wrap gap-2">
               {["Your logo and colours", "Any phone", "WordPress plugin"].map((c) => (
-                <li key={c} className="rounded-full border border-neutral-200 bg-white px-3 py-1 text-[13px] font-medium text-neutral-700">{c}</li>
+                <li key={c} className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[13px] font-medium text-neutral-100">{c}</li>
               ))}
             </ul>
           </div>
@@ -834,63 +976,79 @@ const CustomerExperienceSection: FC = () => (
   </section>
 );
 
-const PricingSection: FC = () => (
-  <section id="pricing" className="scroll-mt-16 bg-neutral-50 py-20 md:py-28">
-    <div className="mx-auto max-w-7xl px-6">
-      <h2 className="mx-auto mb-14 max-w-2xl text-center font-editorial text-4xl leading-[1.05] text-neutral-950 text-balance md:text-5xl">
-        Pricing built for forwarders.
-      </h2>
+const PricingSection: FC = () => {
+  const soon = plans.business.comingSoon ?? [];
+  const starterItems = FREE_PLAN_ITEMS.filter((i) => !i.startsWith("Up to"));
+  const more = Math.max(0, soon.length - SCALE_PREVIEW.length);
 
-      <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-2">
-        <div className="flex flex-col rounded-2xl border-2 border-red-600 bg-white p-8 font-ui">
-          <p className="text-sm font-bold text-red-600">{plans.free.name}</p>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="font-editorial text-5xl text-neutral-950">{STARTER_PRICE}</span>
-            <span className="text-neutral-500">/ month</span>
-          </div>
-          <ul className="my-7 flex-1 space-y-3.5">
-            {FREE_PLAN_ITEMS.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-[15px] text-neutral-700">
-                <Check size={17} className="mt-0.5 shrink-0 text-red-600" strokeWidth={3} />
-                {item}
-              </li>
-            ))}
-          </ul>
-          <Link href="/login?mode=signup" className="block rounded-md bg-red-600 py-3.5 text-center text-[15px] font-semibold text-white transition-colors hover:bg-red-700">
-            Create your workspace
-          </Link>
-        </div>
+  return (
+    <section id="pricing" className="scroll-mt-16 bg-neutral-50 py-20 md:py-28">
+      <div className="mx-auto max-w-7xl px-6">
+        <h2 className="mx-auto mb-12 max-w-2xl text-center font-editorial text-4xl leading-[1.05] text-neutral-950 text-balance md:mb-14 md:text-5xl">
+          Pricing built for forwarders.
+        </h2>
 
-        <div className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-8 font-ui">
-          <p className="text-sm font-bold text-neutral-900">{plans.business.name}</p>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="font-editorial text-5xl text-neutral-950">{SCALE_PRICE}</span>
-            <span className="text-neutral-500">/ month</span>
-          </div>
-          <p className="mt-2 text-sm text-neutral-600">Everything in Starter, plus:</p>
-          <ul className="my-7 flex-1 space-y-3.5">
-            <li className="flex items-start gap-3 text-[15px] text-neutral-700">
-              <Check size={17} className="mt-0.5 shrink-0 text-neutral-900" strokeWidth={3} />
-              Higher status-update and automation limits
-            </li>
-            {SCALE_PREVIEW.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-[15px] text-neutral-700">
-                <Check size={17} className="mt-0.5 shrink-0 text-neutral-400" strokeWidth={3} />
-                <span>
+        <div className="mx-auto grid max-w-5xl items-stretch gap-5 md:grid-cols-2">
+          {/* Starter */}
+          <div className="flex flex-col rounded-2xl bg-white p-8 font-ui shadow-sm md:p-10">
+            <p className="text-lg font-bold text-neutral-950">{plans.free.name}</p>
+
+            <div className="mt-4 flex items-baseline gap-1">
+              <span className="font-editorial text-6xl leading-none text-neutral-950">R{plans.free.price}</span>
+              <span className="text-neutral-500">/ month</span>
+            </div>
+            <p className="mt-3 text-[15px] font-medium text-red-600">100 status updates a month</p>
+
+            <ul className="mt-8 flex-1 space-y-3.5">
+              {starterItems.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-[15px] text-neutral-700">
+                  <Check size={17} className="mt-0.5 shrink-0 text-red-600" strokeWidth={3} />
                   {item}
-                  <span className="ml-2 rounded bg-neutral-200 px-1.5 py-0.5 align-middle text-[10px] font-semibold uppercase tracking-wide text-neutral-600">Soon</span>
-                </span>
+                </li>
+              ))}
+            </ul>
+
+            <Link href="/login?mode=signup" className="mt-9 block rounded-lg bg-red-600 py-3.5 text-center text-[15px] font-semibold text-white transition-colors hover:bg-red-700">
+              Create your workspace
+            </Link>
+          </div>
+
+          {/* Scale */}
+          <div className="flex flex-col rounded-2xl bg-neutral-950 p-8 font-ui text-white md:p-10">
+            <p className="text-lg font-bold">{plans.business.name}</p>
+
+            <div className="mt-4 flex items-baseline gap-1">
+              <span className="font-editorial text-6xl leading-none">R{plans.business.price}</span>
+              <span className="text-neutral-400">/ month</span>
+            </div>
+            <p className="mt-3 text-[15px] font-medium text-neutral-300">Higher status-update limits</p>
+
+            <ul className="mt-8 flex-1 space-y-3.5">
+              <li className="flex items-start gap-3 text-[15px] font-medium text-white">
+                <Check size={17} className="mt-0.5 shrink-0 text-white" strokeWidth={3} />
+                Everything in Starter
               </li>
-            ))}
-          </ul>
-          <Link href="/upgrade" className="block rounded-md border border-neutral-300 bg-white py-3.5 text-center text-[15px] font-semibold text-neutral-900 transition-colors hover:border-neutral-400">
-            Compare plans
-          </Link>
+              {SCALE_PREVIEW.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-[15px] text-neutral-300">
+                  <Check size={17} className="mt-0.5 shrink-0 text-neutral-500" strokeWidth={3} />
+                  <span>
+                    {item}
+                    <span className="ml-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-500">Soon</span>
+                  </span>
+                </li>
+              ))}
+              {more > 0 && <li className="pl-8 text-sm text-neutral-500">+ {more} more on the way</li>}
+            </ul>
+
+            <Link href="/upgrade" className="mt-9 block rounded-lg bg-white py-3.5 text-center text-[15px] font-semibold text-neutral-950 transition-colors hover:bg-neutral-200">
+              Compare plans
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 const CTASection: FC = () => (
   <section className="bg-white px-6 pb-20 pt-4 md:pb-28">
@@ -918,11 +1076,9 @@ const CTASection: FC = () => (
 );
 
 const Landing: FC = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const goTo: GoTo = (e, id) => {
     e.preventDefault();
-    setMobileMenuOpen(false);
     const el = document.getElementById(id);
     if (!el) return;
     window.history.replaceState(null, "", `#${id}`);
@@ -938,7 +1094,7 @@ const Landing: FC = () => {
         .font-code { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; }
       `}</style>
 
-      <Nav open={mobileMenuOpen} setOpen={setMobileMenuOpen} goTo={goTo} />
+      <Nav />
 
       <main>
         <HeroSection goTo={goTo} />
@@ -986,18 +1142,43 @@ const FOOTER_COLUMNS: { title: string; links: { label: string; href: string; ext
 
 export const SiteFooter: FC = () => (
   <footer className="bg-neutral-950 text-neutral-400">
-    <div className="mx-auto max-w-7xl px-6 pb-8 pt-16">
-      <div className="grid gap-12 md:grid-cols-[1.4fr_2fr] lg:gap-20">
-        <div>
+    <div className="mx-auto max-w-7xl px-6 pt-16">
+      <div className="grid gap-12 pb-14 sm:grid-cols-2 lg:grid-cols-[1.7fr_1fr_1fr_1fr_1.4fr] lg:gap-10">
+        <div className="sm:col-span-2 lg:col-span-1">
           <Link href="/" className="inline-flex items-center gap-2.5">
             <img src={freighticsLogo} alt="" className="h-9 w-9 object-contain" />
             <span className="text-lg font-bold tracking-tight text-white">Freightics</span>
           </Link>
-          <p className="mt-4 max-w-xs text-sm leading-relaxed">Freight forwarding software for South African forwarders.</p>
-          <ul className="mt-6 space-y-3 text-sm">
+          <p className="mt-4 max-w-xs text-sm leading-relaxed">
+            Operations software for freight forwarders and clearing agents.
+          </p>
+        </div>
+
+        {FOOTER_COLUMNS.map((col) => (
+          <nav key={col.title} aria-label={col.title}>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-200">{col.title}</p>
+            <ul className="mt-5 space-y-3 text-sm">
+              {col.links.map((l) => (
+                <li key={l.label}>
+                  {l.external ? (
+                    <a href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition-colors hover:text-white">
+                      {l.label} <ArrowUpRight className="h-3.5 w-3.5 opacity-60" />
+                    </a>
+                  ) : (
+                    <Link href={l.href} className="transition-colors hover:text-white">{l.label}</Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
+
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-200">Contact</p>
+          <ul className="mt-5 space-y-3 text-sm">
             <li>
-              <a href="mailto:scofield@olyxee.com" className="inline-flex items-center gap-2.5 transition-colors hover:text-white">
-                <Mail className="h-4 w-4 text-neutral-500" /> scofield@olyxee.com
+              <a href="mailto:info@olyxee.com" className="inline-flex items-center gap-2.5 transition-colors hover:text-white">
+                <Mail className="h-4 w-4 text-neutral-500" /> info@olyxee.com
               </a>
             </li>
             <li>
@@ -1007,34 +1188,13 @@ export const SiteFooter: FC = () => (
             </li>
           </ul>
         </div>
-
-        <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
-          {FOOTER_COLUMNS.map((col) => (
-            <div key={col.title}>
-              <p className="text-sm font-semibold text-white">{col.title}</p>
-              <ul className="mt-4 space-y-3 text-sm">
-                {col.links.map((l) => (
-                  <li key={l.label}>
-                    {l.external ? (
-                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition-colors hover:text-white">
-                        {l.label} <ArrowUpRight className="h-3.5 w-3.5 opacity-60" />
-                      </a>
-                    ) : (
-                      <Link href={l.href} className="transition-colors hover:text-white">{l.label}</Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
       </div>
 
-      <div className="mt-14 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm sm:flex-row sm:items-center sm:justify-between">
-        <p>© {new Date().getFullYear()} Freightics. All rights reserved.</p>
-        <p className="flex flex-wrap items-center gap-x-5 gap-y-1">
-          <a href="https://olyxee.com" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white">A product of Olyxee</a>
-          <span>Made in South Africa</span>
+      <div className="flex flex-col gap-3 border-t border-white/10 py-6 text-[13px] text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
+        <p>© {new Date().getFullYear()} Olyxee. All rights reserved.</p>
+        <p>
+          Freightics is a product of{" "}
+          <a href="https://olyxee.com" target="_blank" rel="noopener noreferrer" className="text-neutral-300 transition-colors hover:text-white">Olyxee</a>
         </p>
       </div>
     </div>
