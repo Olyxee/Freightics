@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import { and, desc, eq } from "drizzle-orm";
-import { db, invoicesTable, ordersTable, customersTable, businessesTable, trackingEventsTable, auditLogsTable, jobCostsTable } from "@workspace/db";
+import { db, invoicesTable, ordersTable, customersTable, businessesTable, trackingEventsTable, auditLogsTable, jobCostsTable, emailNotificationsTable } from "@workspace/db";
 import { requireAuth } from "../lib/auth";
 import { generateId } from "../lib/id";
 import { canConfirmInvoicePaid } from "../lib/invoice-workflow";
@@ -143,6 +143,15 @@ router.post("/invoices/:invoiceId/send",requireAuth,async(req,res)=>{
     res.status(502).json({error:`${sent.error||"Invoice email failed"}${smsMessage}`,smsStatus});return;
   }
   const now=new Date();const [updated]=await db.update(invoicesTable).set({status:"sent",sentAt:now,updatedAt:now}).where(and(eq(invoicesTable.id,id),eq(invoicesTable.businessId,businessId))).returning();
+  await db.insert(emailNotificationsTable).values({
+    id: generateId(),
+    orderId: invoice.orderId,
+    customerEmail: customer.email,
+    subject: `Invoice ${invoice.invoiceNumber}`,
+    body: "Invoice email sent to customer.",
+    status: "sent",
+    providerMessageId: sent.messageId ?? null,
+  });
   // Invoice sent -> billing_status AWAITING_PAYMENT (shipment status untouched).
   await db.update(ordersTable).set({billingStatus:"AWAITING_PAYMENT",updatedAt:now}).where(and(eq(ordersTable.id,order.id),eq(ordersTable.businessId,businessId)));
   await db.insert(auditLogsTable).values({id:generateId(),businessId,userId,action:"SEND_INVOICE",entityType:"invoice",entityId:id,metadata:{orderId:invoice.orderId,messageId:sent.messageId,customerEmail:customer.email,smsStatus}});
