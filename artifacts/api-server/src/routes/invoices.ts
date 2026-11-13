@@ -131,22 +131,46 @@ router.post("/invoices/:invoiceId/send",requireAuth,async(req,res)=>{
     const sms=await sendInvoiceSms({orderId:invoice.orderId,customerPhone:customer.phone??undefined,businessName:business.invoiceLegalName||business.name,invoiceNumber:invoice.invoiceNumber,total:Number(invoice.total),currency:invoice.currency,trackingId:order.trackingId,businessPlan:business.plan,businessId,skipDuplicateCheck:isResend});
     smsStatus=sms.smsStatus;
   }catch(err){req.log.error({err,invoiceId:id},"Invoice SMS send failed (non-fatal)");}
-  if(!sent.success){
-    req.log.error({invoiceId:id,businessId,customerId:customer.id,reason:sent.error||"unknown",smsStatus},"Invoice email delivery failed");
-    const smsMessage = smsStatus === "sent"
-      ? " SMS was accepted by the SMS provider."
-      : smsStatus === "failed"
-        ? " SMS could not be sent."
-        : smsStatus === "limit_reached"
-          ? " SMS skipped: the plan limit was reached."
-          : " SMS was skipped.";
-    res.status(502).json({error:`${sent.error||"Invoice email failed"}${smsMessage}`,smsStatus});return;
+  const emailOk = sent.success;
+  if (!emailOk) {
+    req.log.error(
+      { invoiceId: id, businessId, customerId: customer.id, reason: sent.error || "unknown", smsStatus },
+      "Invoice email delivery failed (non-fatal, invoice still moves to awaiting payment)",
+    );
   }
-  const now=new Date();const [updated]=await db.update(invoicesTable).set({status:"sent",sentAt:now,updatedAt:now}).where(and(eq(invoicesTable.id,id),eq(invoicesTable.businessId,businessId))).returning();
-  // Invoice sent -> billing_status AWAITING_PAYMENT (shipment status untouched).
-  await db.update(ordersTable).set({billingStatus:"AWAITING_PAYMENT",updatedAt:now}).where(and(eq(ordersTable.id,order.id),eq(ordersTable.businessId,businessId)));
-  await db.insert(auditLogsTable).values({id:generateId(),businessId,userId,action:"SEND_INVOICE",entityType:"invoice",entityId:id,metadata:{orderId:invoice.orderId,messageId:sent.messageId,customerEmail:customer.email,smsStatus}});
-  res.json({...serialize(updated),smsStatus});
+  const now = new Date();
+  const [updated] = await db
+    .update(invoicesTable)
+    .set({ status: "sent", ...(emailOk ? { sentAt: now } : {}), updatedAt: now })
+    .where(and(eq(invoicesTable.id, id), eq(invoicesTable.businessId, businessId)))
+    .returning();
+  // Invoice issued -> billing_status AWAITING_PAYMENT (shipment status untouched).
+  await db
+    .update(ordersTable)
+    .set({ billingStatus: "AWAITING_PAYMENT", updatedAt: now })
+    .where(and(eq(ordersTable.id, order.id), eq(ordersTable.businessId, businessId)));
+  await db.insert(auditLogsTable).values({
+    id: generateId(),
+    businessId,
+    userId,
+    action: "SEND_INVOICE",
+    entityType: "invoice",
+    entityId: id,
+    metadata: {
+      orderId: invoice.orderId,
+      messageId: sent.messageId,
+      customerEmail: customer.email,
+      smsStatus,
+      emailStatus: emailOk ? "sent" : "failed",
+      ...(emailOk ? {} : { emailError: sent.error || "unknown" }),
+    },
+  });
+  res.json({
+    ...serialize(updated),
+    smsStatus,
+    emailStatus: emailOk ? "sent" : "failed",
+    ...(emailOk ? {} : { emailError: sent.error || "Invoice email failed" }),
+  });
 });
 router.post("/invoices/:invoiceId/pay",requireAuth,async(req,res)=>updateStatus(req,res,"paid"));
 async function updateStatus(req:any,res:any,status:"sent"|"paid"){
@@ -174,7 +198,7 @@ async function updateStatus(req:any,res:any,status:"sent"|"paid"){
   });
   let smsStatus:"sent"|"failed"|"skipped"|"limit_reached"="skipped";
   if(status==="paid"&&order&&customer&&business){
-    const trackingBase=(process.env.PUBLIC_TRACKING_URL||"https://logistics.olyxee.com").replace(/\/$/,"");
+    const trackingBase=(process.env.PUBLIC_TRACKING_URL||"https://freightics.olyxee.com").replace(/\/$/,"");
     try{
       const sms=await sendOrderSms({
         orderId:order.id,
