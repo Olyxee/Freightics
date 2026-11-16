@@ -15,7 +15,7 @@ export const PublicShell: FC<{ children: ReactNode }> = ({ children }) => {
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center" data-testid="link-home">
-            <span className="text-lg font-bold tracking-tight">Olyxee Logistics</span>
+            <span className="text-lg font-bold tracking-tight">Freightics</span>
           </Link>
           <nav className="flex items-center gap-0.5 sm:gap-1">
             {TABS.map((t) => (

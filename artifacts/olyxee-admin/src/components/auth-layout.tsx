@@ -10,7 +10,7 @@ export function AuthLayout({ children }: { children: ReactNode }) {
         aria-label="Back to home"
         data-testid="link-auth-home"
       >
-        <span className="text-lg font-bold tracking-tight text-neutral-900">Olyxee Logistics</span>
+        <span className="text-lg font-bold tracking-tight text-neutral-900">Freightics</span>
       </Link>
       <div className="w-full max-w-[420px]">{children}</div>
     </div>

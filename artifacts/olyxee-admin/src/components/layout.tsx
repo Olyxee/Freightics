@@ -176,7 +176,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Footer - profile + plan + settings now live in the top-bar account menu. */}
       <div className="flex-shrink-0 border-t border-sidebar-border px-5 py-2.5">
-        <p className="text-[10px] text-sidebar-foreground/25 tracking-widest uppercase">Powered by Olyxee</p>
+        <p className="text-[10px] text-sidebar-foreground/25 tracking-widest uppercase">Powered by Freightics</p>
       </div>
     </div>
   );

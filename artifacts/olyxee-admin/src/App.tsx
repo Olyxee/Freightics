@@ -227,7 +227,7 @@ function BrandingSync() {
     saveSettings({
       businessName: business.name,
       logoUrl: business.business_logo_url ?? "",
-      primaryColor: business.primary_brand_colour || "#2b2b2b",
+      primaryColor: business.primary_brand_colour || "#DC2626",
     });
   }, [business?.name, business?.business_logo_url, business?.primary_brand_colour, saveSettings]);
   return null;
