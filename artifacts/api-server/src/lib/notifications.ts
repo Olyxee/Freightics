@@ -25,7 +25,9 @@ export type DeliveryStatus =
   | "queued"
   | "sent"
   | "delivered"
-  | "failed";
+  | "failed"
+  | "bounced"
+  | "suppressed";
 
 export interface ChannelOutcome {
   channel: DeliveryChannel;

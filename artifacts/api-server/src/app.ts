@@ -7,6 +7,7 @@ import pinoHttp from "pino-http";
 import router from "./routes";
 import publicTrackingRouter from "./routes/public-tracking";
 import retellWebhookRouter from "./routes/webhooks/retell";
+import resendWebhookRouter from "./routes/webhooks/resend";
 import internalVoiceRouter from "./routes/internal-voice";
 import { logger } from "./lib/logger";
 import {
@@ -144,6 +145,9 @@ app.use("/api", publicTrackingRouter);
 // before the authenticated router. Does NOT inherit publicCors (no browser
 // origin expected from Retell's infrastructure).
 app.use("/api", retellWebhookRouter);
+
+// Resend webhook: unauthenticated by session but signature-verified.
+app.use("/api", resendWebhookRouter);
 
 app.use("/api", (req: Request, res: Response, next: NextFunction) => {
   if (
