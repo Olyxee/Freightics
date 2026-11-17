@@ -13,7 +13,7 @@ export const notificationDeliveriesTable = pgTable("notification_deliveries", {
     .references(() => notificationEventsTable.id),
   channel: text("channel", { enum: ["email", "sms"] }).notNull(),
   status: text("status", {
-    enum: ["pending", "queued", "sent", "delivered", "failed"],
+    enum: ["pending", "queued", "sent", "delivered", "failed", "bounced", "suppressed"],
   })
     .notNull()
     .default("pending"),

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import { and, desc, eq } from "drizzle-orm";
-import { db, invoicesTable, ordersTable, customersTable, businessesTable, trackingEventsTable, auditLogsTable, jobCostsTable } from "@workspace/db";
+import { db, invoicesTable, ordersTable, customersTable, businessesTable, trackingEventsTable, auditLogsTable, jobCostsTable, emailNotificationsTable } from "@workspace/db";
 import { requireAuth } from "../lib/auth";
 import { generateId } from "../lib/id";
 import { canConfirmInvoicePaid } from "../lib/invoice-workflow";
