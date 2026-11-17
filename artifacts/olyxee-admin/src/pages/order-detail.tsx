@@ -277,11 +277,11 @@ export default function OrderDetailPage() {
   const [customerEditOpen,setCustomerEditOpen]=useState(false);
   const [customerForm,setCustomerForm]=useState({fullName:"",email:"",phone:"",companyName:"",address:""});
   const [editForm,setEditForm]=useState({orderReference:"",description:"",cargoType:"",serviceRequired:"",origin:"",destination:"",weight:"",dimensions:"",estimatedDeliveryDate:""});
-  const editOrder=useMutation({mutationFn:()=>apiFetch(`/api/orders/${id}`,{method:"PUT",body:editForm}),onSuccess:async()=>{await queryClient.invalidateQueries({queryKey:["order",id]});toast.success("Order updated");setEditOpen(false);refetch();},onError:(error:Error)=>toast.error(error.message)});
+  const editOrder=useMutation({mutationFn:()=>apiFetch(`/api/orders/${id}`,{method:"PUT",body:editForm}),onSuccess:async()=>{await queryClient.invalidateQueries({queryKey:["order",id]});toast.success("Job updated");setEditOpen(false);refetch();},onError:(error:Error)=>toast.error(error.message)});
   const openOrderEdit=()=>{if(!order)return;setEditForm({orderReference:order.order_reference??"",description:order.description??"",cargoType:order.cargo_type??"",serviceRequired:order.service_required??"",origin:order.origin??"",destination:order.destination??"",weight:order.weight??"",dimensions:order.dimensions??"",estimatedDeliveryDate:order.estimated_delivery_date??""});setEditOpen(true);};
   const openCustomerEdit=()=>{if(!order?.customers)return;setCustomerForm({fullName:order.customers.full_name??"",email:order.customers.email??"",phone:order.customers.phone??"",companyName:order.customers.company_name??"",address:order.customers.address??""});setCustomerEditOpen(true);};
   const saveCustomer=(e:React.FormEvent)=>{e.preventDefault();if(!order?.customers||!user)return;updateCustomer.mutate({id:order.customers.id,business_id:user.businessId,full_name:customerForm.fullName,email:customerForm.email,phone:customerForm.phone||undefined,company_name:customerForm.companyName||undefined,address:customerForm.address||undefined},{onSuccess:async()=>{await queryClient.invalidateQueries({queryKey:["order",id]});toast.success("Customer information updated");setCustomerEditOpen(false);refetch();},onError:()=>toast.error("Failed to update customer information")});};
-  const deleteOrder = useMutation({ mutationFn: () => apiFetch(`/api/orders/${id}`, { method: "DELETE" }), onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: ["orders"] }); toast.success("Order and its linked invoice deleted"); navigate("/orders"); }, onError: (error: Error) => toast.error(error.message) });
+  const deleteOrder = useMutation({ mutationFn: () => apiFetch(`/api/orders/${id}`, { method: "DELETE" }), onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: ["orders"] }); toast.success("Job and its linked invoice deleted"); navigate("/orders"); }, onError: (error: Error) => toast.error(error.message) });
   const invoiceStatus = (order as (typeof order & { invoice_status?: string | null }))?.invoice_status ?? null;
   const isPostpaid = order?.billing_type === "POSTPAID";
   const companyName = business?.name ?? "Company";
@@ -320,8 +320,12 @@ export default function OrderDetailPage() {
         // Close-the-job flow: create the invoice and email it to the customer
         // in one action, then open it so the admin can confirm payment later.
         try {
-          await apiFetch(`/api/invoices/${invoice.id}/send`, { method: "POST" });
-          toast.success("Invoice created and emailed to the customer");
+          const sendRes = await apiFetch<{ emailStatus?: string }>(`/api/invoices/${invoice.id}/send`, { method: "POST" });
+          if (sendRes?.emailStatus === "failed") {
+            toast.warning("Invoice created, but the email couldn't be sent. Payment can still be confirmed. Open the invoice to resend.");
+          } else {
+            toast.success("Invoice created and emailed to the customer");
+          }
         } catch {
           toast.warning("Invoice created, but the email couldn't be sent. Open it to resend.");
         }
@@ -413,7 +417,7 @@ export default function OrderDetailPage() {
   if (!order) {    return (
       <EmptyState
         icon={<PackageX className="h-12 w-12" />}
-        title="Order not found"
+        title="Job not found"
         description="This order may have been deleted or the tracking link is incorrect."
         action={
           <Link href="/orders">
@@ -438,7 +442,7 @@ export default function OrderDetailPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Link href="/orders">
           <Button variant="ghost" size="sm" className="gap-1.5 -ml-2 text-muted-foreground">
-            <ArrowLeft className="h-4 w-4" /> Orders
+            <ArrowLeft className="h-4 w-4" /> Jobs
           </Button>
         </Link>
         <Button variant="outline" size="sm" className="rounded-xl" onClick={openOrderEdit}><Edit className="mr-1 h-3.5 w-3.5"/>Edit order</Button>

@@ -180,6 +180,9 @@ describe("POST /orders — transport mode requirements", () => {
       .mockReturnValueOnce(insertChain([inserted]) as any)
       .mockReturnValue(insertChainPlain() as any);
     mockInvoiceTransaction();
+    mockDb.update.mockReturnValue({
+      set: vi.fn(() => ({ where: vi.fn(async () => undefined) })),
+    } as any);
     const app = await buildApp();
     const res = await request(app)
       .post("/orders")
@@ -224,6 +227,9 @@ describe("POST /orders — transport mode requirements", () => {
       smsLimit: null,
     });
     mockInvoiceTransaction();
+    mockDb.update.mockReturnValue({
+      set: vi.fn(() => ({ where: vi.fn(async () => undefined) })),
+    } as any);
     const app = await buildApp();
     const res = await request(app)
       .post("/orders")
