@@ -148,7 +148,7 @@ router.post("/invoices/:invoiceId/send",requireAuth,async(req,res)=>{
       "Invoice email delivery failed (non-fatal, invoice still moves to awaiting payment)",
     );
   }
-    const now = new Date();
+      const now = new Date();
 
   const [updated] = await db
     .update(invoicesTable)
