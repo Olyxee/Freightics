@@ -1,4 +1,4 @@
-# Olyxee Logistics: index the public marketing pages,
+# Freightics: index the public marketing pages,
 # keep the authenticated app surface out of search.
 User-agent: *
 Allow: /$

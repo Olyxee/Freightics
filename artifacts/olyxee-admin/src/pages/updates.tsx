@@ -19,7 +19,7 @@ const ANNOUNCEMENTS: Announcement[] = [
   {
     date: "July 2026",
     tag: "Launch",
-    title: `Olyxee Logistics is going live on ${LAUNCH_LABEL}`,
+    title: `Freightics is going live on ${LAUNCH_LABEL}`,
     body: `Everything is free for every business until ${SCALE_BILLING_START_LABEL} - nothing to pay right now. After that you choose: stay on Starter (R89/month) to keep running your freight jobs, or move up to Scale (R999/month). No payment is taken before then.`,
   },
   {
@@ -58,7 +58,7 @@ const FEATURES: UpcomingFeature[] = [
     icon: Code2,
     title: "Public API",
     description:
-      "Create and track orders programmatically with API keys, so you can plug Olyxee Logistics into your own systems.",
+      "Create and track orders programmatically with API keys, so you can plug Freightics into your own systems.",
     plan: "Scale",
   },
 ];

@@ -214,7 +214,7 @@ function AppRoutes() {
 
 // Tells the theme whether tenant branding (favicon + tab title) should be
 // active. It only switches on once the user is authenticated, so logged-out
-// visitors always see our Olyxee Logistics favicon.
+// visitors always see our Freightics favicon.
 function BrandingSync() {
   const { status, user } = useAuth();
   const { data: business } = useBusiness(user?.businessId);

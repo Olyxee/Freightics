@@ -186,7 +186,7 @@ export default function TrackPage() {
       <div className="mb-7 flex w-full max-w-2xl items-center gap-3">
         <div className="flex items-center gap-3">
           {data?.business?.logoUrl ? <img src={data.business.logoUrl} alt="" className="h-9 w-9 rounded-xl object-contain bg-white border border-black/5" /> : <div className="h-9 w-9 rounded-xl bg-neutral-900 text-white grid place-items-center font-semibold">{data?.business?.name?.[0] || "O"}</div>}
-          <div><p className="text-sm font-semibold">{data?.business?.name || "Olyxee Logistics"}</p><p className="text-xs text-neutral-500">Shipment tracking</p></div>
+          <div><p className="text-sm font-semibold">{data?.business?.name || "Freightics"}</p><p className="text-xs text-neutral-500">Shipment tracking</p></div>
         </div>
       </div>
 
@@ -324,7 +324,7 @@ export default function TrackPage() {
           </div>
         )}
 
-        {data ? <p className="mt-6 text-center text-xs text-neutral-400">Last updated {formatDateTime(data.lastUpdated)} · Powered by Olyxee</p> : null}
+        {data ? <p className="mt-6 text-center text-xs text-neutral-400">Last updated {formatDateTime(data.lastUpdated)} · Powered by Freightics</p> : null}
       </div>
 
       {action && data && <div className="fixed inset-0 z-50 bg-black/35 backdrop-blur-sm p-4 flex items-end sm:items-center justify-center" onMouseDown={(e)=>{if(e.target===e.currentTarget)setAction(null);}}>

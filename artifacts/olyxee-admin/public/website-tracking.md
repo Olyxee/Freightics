@@ -1,6 +1,6 @@
 # Show live shipment tracking on your own website
 
-This guide is for an Olyxee Logistics business (and its web developer) that wants
+This guide is for a Freightics business (and its web developer) that wants
 customers to see their order status **on the business's own website** - not only
 on the Olyxee-hosted tracking page.
 

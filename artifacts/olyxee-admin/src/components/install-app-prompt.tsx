@@ -75,12 +75,12 @@ export function InstallAppPrompt() {
   if (!visible) return null;
 
   return (
-    <aside className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-sm rounded-2xl border border-border/80 bg-background/95 p-4 shadow-2xl backdrop-blur sm:inset-x-auto sm:bottom-6 sm:right-6" role="dialog" aria-label="Install Olyxee Logistics">
+    <aside className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-sm rounded-2xl border border-border/80 bg-background/95 p-4 shadow-2xl backdrop-blur sm:inset-x-auto sm:bottom-6 sm:right-6" role="dialog" aria-label="Install Freightics">
       <button type="button" onClick={dismiss} className="absolute right-3 top-3 rounded-full p-1 text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Dismiss install suggestion"><X className="h-4 w-4" /></button>
       <div className="flex gap-3 pr-6">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><Smartphone className="h-5 w-5" /></div>
         <div>
-          <h2 className="text-sm font-semibold">Add Olyxee Logistics to your device</h2>
+          <h2 className="text-sm font-semibold">Add Freightics to your device</h2>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">Open your logistics workspace faster from your home screen or desktop.</p>
         </div>
       </div>

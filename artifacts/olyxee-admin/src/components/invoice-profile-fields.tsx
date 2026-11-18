@@ -94,7 +94,7 @@ export function InvoiceProfileFields({
       {sub === 0 && (
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Legal business name" htmlFor="invoiceLegalName" full>
-            <input id="invoiceLegalName" className={field} autoComplete="organization" value={profile.legalName} onChange={(e) => update("legalName", e.target.value)} placeholder="Olyxee Logistics (Pty) Ltd" />
+            <input id="invoiceLegalName" className={field} autoComplete="organization" value={profile.legalName} onChange={(e) => update("legalName", e.target.value)} placeholder="Freightics (Pty) Ltd" />
           </Field>
           <Field label="Accounts email" htmlFor="invoice-email">
             <input id="invoice-email" className={field} type="email" autoComplete="email" value={profile.email} onChange={(e) => update("email", e.target.value)} placeholder="accounts@company.com" />
