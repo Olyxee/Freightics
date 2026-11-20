@@ -9,7 +9,7 @@ import {
   businessesTable,
   passwordResetTokensTable,
 } from "@workspace/db";
-import { companyAcronym, generateId } from "../lib/id";
+import { companyAcronym, generateId ,withUniquePrefix} from "../lib/id";
 import {
   SESSION_COOKIE,
   signSession,
@@ -214,24 +214,31 @@ router.post("/auth/signup", async (req, res) => {
     const userId = generateId();
     const slug = `${slugify(businessName)}-${businessId.slice(0, 6)}`;
 
-    await db.transaction(async (tx) => {
-      await tx.insert(businessesTable).values({
-        id: businessId,
-        name: businessName,
-        slug,
-        websiteUrl: "",
-        supportEmail: email,
-        trackingIdPrefix: companyAcronym(businessName),
-      });
-      await tx.insert(usersTable).values({
-        id: userId,
-        businessId,
-        name: fullName,
-        email,
-        passwordHash,
-        role: "owner",
-      });
-    });
+        const { prefix: trackingPrefix } = await withUniquePrefix(
+      companyAcronym(businessName),
+      (trackingIdPrefix) =>
+        db.transaction(async (tx) => {
+          await tx.insert(businessesTable).values({
+            id: businessId,
+            name: businessName,
+            slug,
+            websiteUrl: "",
+            supportEmail: email,
+            trackingIdPrefix,
+          });
+          await tx.insert(usersTable).values({
+            id: userId,
+            businessId,
+            name: fullName,
+            email,
+            passwordHash,
+            role: "owner",
+          });
+        }),
+    );
+    if (trackingPrefix !== companyAcronym(businessName)) {
+      console.warn("[signup] tracking prefix taken, used fallback:", trackingPrefix);
+    }
 
     const token = signSession(userId);
     res.cookie(SESSION_COOKIE, token, sessionCookieOptions());
