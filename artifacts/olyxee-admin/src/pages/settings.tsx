@@ -1523,7 +1523,15 @@ function TrackingCustomizationSection() {
           setPrefix(b.tracking_id_prefix ?? "");
           refetch();
         },
-        onError: () => toast.error("Could not save tracking prefix"),
+        onError: (err: unknown) => {
+          const msg = err instanceof Error ? err.message : "";
+          const status = (err as { status?: number } | null)?.status;
+          if (status === 409 || /already used by another business/i.test(msg)) {
+            toast.error("That tracking prefix is already used by another business. Please choose a different one.");
+          } else {
+            toast.error("Could not save tracking prefix");
+          }
+        },
       },
     );
   };
