@@ -80,3 +80,54 @@ export function resolveTrackingPrefix(
 
   return "OLY";
 }
+// ─── Tracking prefix collision handling ───────────────────────────────────────
+// businesses.tracking_id_prefix is UNIQUE across all tenants. Two companies
+// can derive the same acronym (e.g. "Logistics Co" and "Link Overland Group"
+// both -> "LOG"), so signup must fall back to a free variant instead of failing.
+// Candidates stay 3-5 letters A-Z so they pass the same validation the
+// settings page and business.ts use.
+
+const ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+export function prefixCandidates(base: string): string[] {
+  const cleaned = (base ?? "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 5);
+  const first = cleaned.length >= 3 ? cleaned : "OLY";
+  const stem = first.slice(0, 3);
+  const out: string[] = [first];
+  for (const a of ALPHA) out.push(stem + a); // LOG -> LOGA..LOGZ
+  for (const a of ALPHA) for (const b of ALPHA) out.push(stem + a + b); // LOGAA..LOGZZ
+  return Array.from(new Set(out));
+}
+
+// True only for a Postgres unique violation on the prefix column. Walks the
+// error's cause chain because drizzle wraps the driver error.
+export function isPrefixConflict(err: unknown): boolean {
+  let cur: any = err;
+  for (let i = 0; i < 6 && cur; i++) {
+    if (cur.code === "23505") {
+      const text = `${cur.constraint ?? ""} ${cur.detail ?? ""} ${cur.message ?? ""}`;
+      if (/tracking_id_prefix/.test(text)) return true;
+    }
+    cur = cur.cause;
+  }
+  return false;
+}
+
+// Runs `attempt` with the base prefix, then with variants, until one is not
+// taken. Relies on the DB constraint (not check-then-insert) so two simultaneous
+// signups can never both win the same prefix. Any other error is rethrown.
+export async function withUniquePrefix<T>(
+  base: string,
+  attempt: (prefix: string) => Promise<T>,
+  isConflict: (err: unknown) => boolean = isPrefixConflict,
+  maxAttempts = 50,
+): Promise<{ result: T; prefix: string }> {
+  for (const prefix of prefixCandidates(base).slice(0, maxAttempts)) {
+    try {
+      return { result: await attempt(prefix), prefix };
+    } catch (err) {
+      if (!isConflict(err)) throw err;
+    }
+  }
+  throw new Error(`No free tracking prefix found for "${base}"`);
+}
