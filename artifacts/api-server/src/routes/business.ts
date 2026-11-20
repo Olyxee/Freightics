@@ -21,7 +21,7 @@ import { eq, inArray } from "drizzle-orm";
 import { UpdateBusinessBody } from "@workspace/api-zod";
 import { getPlan, isScaleBillingLive, SCALE_BILLING_START_LABEL } from "@workspace/plans";
 import { requireAuth } from "../lib/auth";
-import { generateId } from "../lib/id";
+import { generateId, isPrefixConflict } from "../lib/id";
 import { getMonthlyEmailUsage } from "../lib/email-usage";
 import { DEMO_BUSINESS_ID } from "./auth";
 import { SESSION_COOKIE, sessionCookieOptions } from "../lib/session";
@@ -307,6 +307,12 @@ router.put("/business", requireAuth, async (req, res) => {
     const emailUsageThisMonth = await getMonthlyEmailUsage(businessId);
     res.json(serialize(updated, emailUsageThisMonth));
   } catch (err) {
+    if (isPrefixConflict(err)) {
+      res.status(409).json({
+        error: "That tracking prefix is already used by another business. Please choose a different one.",
+      });
+      return;
+    }
     req.log.error({ err }, "Failed to update business");
     res.status(500).json({ error: "Internal server error" });
   }
