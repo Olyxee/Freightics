@@ -354,15 +354,30 @@ export default function UpgradePage() {
                   {isCurrent ? "Current plan" : "Included for every business"}
                 </Button>
               ) : (
-                // Scale isn't available to join yet - show a blurred "Upgrade"
-                // so it reads as the next step, but clearly not active.
-                <>
-                  <Button className="w-full select-none bg-neutral-950 text-white opacity-70 blur-[1.5px] pointer-events-none" variant="default" disabled tabIndex={-1} aria-hidden data-testid={`button-choose-${id}`}>
-                    Upgrade <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                  <p className="mt-2 text-center text-xs text-muted-foreground">Available from {SCALE_BILLING_START_LABEL}</p>
-                </>
+                <Button
+                  className="w-full bg-neutral-950 text-white"
+                  variant="default"
+                  disabled={!checkoutEnabled || isCurrent || pendingPlan === id}
+                  onClick={() => handleChoose(id)}
+                  data-testid={`button-choose-${id}`}
+                >
+                  {pendingPlan === id
+                    ? "Starting checkout..."
+                    : isCurrent
+                      ? "Current plan"
+                      : checkoutEnabled
+                        ? "Upgrade"
+                        : "Checkout unavailable"}
+                  {!isCurrent && pendingPlan !== id && checkoutEnabled ? (
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  ) : null}
+                </Button>
               )}
+              {id === "business" && !checkoutEnabled ? (
+                <p className="mt-2 text-center text-xs text-muted-foreground">
+                  Subscription checkout is not enabled in this environment.
+                </p>
+              ) : null}
             </Card>
           );
         })}
