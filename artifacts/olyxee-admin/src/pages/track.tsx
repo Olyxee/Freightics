@@ -294,7 +294,7 @@ export default function TrackPage() {
                         ><Icon className="h-4.5 w-4.5"/></span>
                         <div className="min-w-0 flex-1 pt-1">
                         <button type="button" disabled={!event} aria-expanded={event ? expanded : undefined} onClick={()=>event&&setOpenEvent(expanded?null:i)} className="flex w-full items-start gap-3 text-left disabled:cursor-default">
-                          <span className="min-w-0 flex-1"><span className={`block text-sm font-semibold ${isUpcoming ? "text-neutral-400" : "text-neutral-900"}`}>{step.label}</span><span className="mt-1 block text-xs text-neutral-500">{event ? `${eventDate(event.at)} · ${eventTime(event.at)}` : isUpcoming ? "Upcoming" : "Confirmed"}</span></span>
+                        <span className="min-w-0 flex-1"><span className={`block text-sm font-semibold ${isUpcoming ? "text-neutral-400" : "text-neutral-900"}`}>{step.label}</span><span className="mt-1 block text-xs text-neutral-500">{event ? `${eventDate(event.at)} · ${eventTime(event.at)}` : isUpcoming ? "Upcoming" : "Skipped"}</span></span>
                           {isCurrent ? <span className="rounded-full bg-neutral-900 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">Current</span> : null}
                           {event ? <ChevronDown className={`mt-1 h-4 w-4 shrink-0 text-neutral-400 transition-transform ${expanded?"rotate-180":""}`}/> : null}
                         </button>
