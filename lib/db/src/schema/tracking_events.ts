@@ -13,7 +13,7 @@ export const trackingEventsTable = pgTable("tracking_events", {
   exceptionType: text("exception_type"),
   location: text("location"),
   createdBy: text("created_by"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const insertTrackingEventSchema = createInsertSchema(trackingEventsTable);
